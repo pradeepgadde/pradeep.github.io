@@ -1,0 +1,871 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Static Pods - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes Static Pods">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Static Pods">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/02/11/kubernetes-static-pods.html">
+
+
+  <meta property="og:description" content="Kubernetes Static Pods">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-11T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/11/kubernetes-static-pods.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Static Pods">
+    <meta itemprop="description" content="Kubernetes Static Pods">
+    <meta itemprop="datePublished" content="2022-02-11T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/11/kubernetes-static-pods.html" class="u-url" itemprop="url">Kubernetes Static Pods
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-02-11T10:55:04+05:30">February 11, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h1 id="kubernetes-static-pods">Kubernetes Static Pods</h1>
+
+<h3 id="static-pods">Static Pods</h3>
+
+<p><em>Static Pods</em> are managed directly by the kubelet daemon on a specific node, without the API server observing them. Unlike Pods that are managed by the control plane; instead, the kubelet watches each static Pod (and restarts it if it fails).</p>
+
+<p>The Pod names will be suffixed with the node hostname with a leading hyphen.</p>
+
+<p>Manifests are standard Pod definitions in JSON or YAML format in a specific directory. Use the staticPodPath: <code class="language-plaintext highlighter-rouge">&lt;the directory&gt;</code> field in the kubelet configuration file, which periodically scans the directory and creates/deletes static Pods as YAML/JSON files appear/disappear there.</p>
+
+<p>Let’s explore our minikube environment to see if any Static Pods are there.</p>
+
+<p>First SSH to the minikube node and search for the <code class="language-plaintext highlighter-rouge">kubelet</code> process. The result shows all configuration parameteres used by the <code class="language-plaintext highlighter-rouge">kubelet</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ ps -aux | grep kubelet
+root        4244 11.6  4.5 1946788 100436 ?      Ssl  Feb08 238:40 /var/lib/minikube/binaries/v1.23.1/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --cni-conf-dir=/etc/cni/net.mk --config=/var/lib/kubelet/config.yaml --container-runtime=docker --hostname-override=k8s --housekeeping-interval=5m --kubeconfig=/etc/kubernetes/kubelet.conf --network-plugin=cni --node-ip=192.168.177.27
+root      412294 15.3 13.5 1042556 296888 ?      Ssl  01:40  10:27 kube-apiserver --advertise-address=192.168.177.27 --allow-privileged=true --authorization-mode=Node,RBAC --client-ca-file=/var/lib/minikube/certs/ca.crt --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota --enable-bootstrap-token-auth=true --etcd-cafile=/var/lib/minikube/certs/etcd/ca.crt --etcd-certfile=/var/lib/minikube/certs/apiserver-etcd-client.crt --etcd-keyfile=/var/lib/minikube/certs/apiserver-etcd-client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-client-certificate=/var/lib/minikube/certs/apiserver-kubelet-client.crt --kubelet-client-key=/var/lib/minikube/certs/apiserver-kubelet-client.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --proxy-client-cert-file=/var/lib/minikube/certs/front-proxy-client.crt --proxy-client-key-file=/var/lib/minikube/certs/front-proxy-client.key --requestheader-allowed-names=front-proxy-client --requestheader-client-ca-file=/var/lib/minikube/certs/front-proxy-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=8443 --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/minikube/certs/sa.pub --service-account-signing-key-file=/var/lib/minikube/certs/sa.key --service-cluster-ip-range=10.96.0.0/12 --tls-cert-file=/var/lib/minikube/certs/apiserver.crt --tls-private-key-file=/var/lib/minikube/certs/apiserver.key
+docker    429542  0.0  0.0   3348   448 pts/0    S+   02:48   0:00 grep kubelet
+</span></code></pre></div></div>
+<p>As seen above, the kubelet config settings are present in <code class="language-plaintext highlighter-rouge">--config=/var/lib/kubelet/config.yaml</code>. You can explore this file to get the <code class="language-plaintext highlighter-rouge">staticPodPath</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>more /var/lib/kubelet/config.yaml | <span class="nb">grep </span>static
+staticPodPath: /etc/kubernetes/manifests
+</code></pre></div></div>
+<p>Now that we know the <code class="language-plaintext highlighter-rouge">staticPodPath</code>, lets see what manifests are currently defined.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> /etc/kubernetes/manifests/
+etcd.yaml  kube-apiserver.yaml	kube-controller-manager.yaml  kube-scheduler.yaml
+<span class="err">$</span>
+</code></pre></div></div>
+<p>There are four manifest files defined in this location. Looking at the name of the files, you can relate them to the Kubernetes core components.</p>
+
+<p>Let us re-visit the <code class="language-plaintext highlighter-rouge">kube-system</code> namespace and get all the pods running there.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">exit
+logout
+</span>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-n</span> kube-system
+NAME                          READY   STATUS    RESTARTS        AGE
+coredns-64897985d-r9tzv       1/1     Running   8 <span class="o">(</span>114m ago<span class="o">)</span>    6d2h
+etcd-k8s                      1/1     Running   2 <span class="o">(</span>114m ago<span class="o">)</span>    6d2h
+kindnet-jpxdd                 1/1     Running   5 <span class="o">(</span>8h ago<span class="o">)</span>      6d2h
+kindnet-p77mb                 1/1     Running   50 <span class="o">(</span>118m ago<span class="o">)</span>   6d2h
+kube-apiserver-k8s            1/1     Running   3 <span class="o">(</span>8h ago<span class="o">)</span>      6d2h
+kube-controller-manager-k8s   1/1     Running   4 <span class="o">(</span>113m ago<span class="o">)</span>    6d2h
+kube-proxy-fszkr              1/1     Running   1 <span class="o">(</span>2d15h ago<span class="o">)</span>   6d2h
+kube-proxy-m747v              1/1     Running   1               6d2h
+kube-scheduler-k8s            1/1     Running   2 <span class="o">(</span>8h ago<span class="o">)</span>      6d2h
+storage-provisioner           1/1     Running   49 <span class="o">(</span>81m ago<span class="o">)</span>    6d2h
+</code></pre></div></div>
+<p>Pay special attention to the <code class="language-plaintext highlighter-rouge">-k8s</code> string in the name of the Pods: <code class="language-plaintext highlighter-rouge">etcd-k8s</code>, <code class="language-plaintext highlighter-rouge">kube-apiserver-k8s</code>, <code class="language-plaintext highlighter-rouge">kube-controller-manager-k8</code>, and <code class="language-plaintext highlighter-rouge">kube-scheduler-k8s</code>. As mentioned earlier, The StaticPod names will be suffixed with the node hostname (<code class="language-plaintext highlighter-rouge">k8s</code> in our case) with a leading hyphen.</p>
+
+<h4 id="create-a-static-pod-in-the-worker-node">Create a Static Pod in the worker node</h4>
+<p>Now that we have seen the static pods deployed by the system during cluster setup, let us manually deploy an <code class="language-plaintext highlighter-rouge">nginx</code> pod in the second node (<code class="language-plaintext highlighter-rouge">k8s-m02</code>) of our minikube cluster <code class="language-plaintext highlighter-rouge">k8s</code>.</p>
+
+<p>For this first, we need to SSH to that node: <code class="language-plaintext highlighter-rouge">k8s-m02</code>. To do this, add <code class="language-plaintext highlighter-rouge">-n k8s-m02</code> option to the minikube ssh command that we have been using so far.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-n</span> k8s-m02 <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ ip a show eth0
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether be:02:3c:97:9d:85 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.177.28/24 brd 192.168.177.255 scope global dynamic eth0
+       valid_lft 47485sec preferred_lft 47485sec
+
+</span></code></pre></div></div>
+
+<p>This confirms that we logged in to the <code class="language-plaintext highlighter-rouge">k8s-m02</code> node which has the IP address: 192.168.177.28.</p>
+
+<p>Create a new file called <code class="language-plaintext highlighter-rouge">nginx.yaml</code> in the staicPodPath location, that is <code class="language-plaintext highlighter-rouge">/etc/kubernetes/manifests/</code>.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">$ sudo vi /etc/kubernetes/manifests/nginx.yaml</span>
+<span class="s">$ cat /etc/kubernetes/manifests/nginx.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">run</span><span class="pi">:</span> <span class="s">nginx</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">nginx</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+  <span class="na">dnsPolicy</span><span class="pi">:</span> <span class="s">ClusterFirst</span>
+  <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+<span class="s">$ exit</span>
+<span class="s">logout</span>
+</code></pre></div></div>
+<p>By the presence of this file in the <code class="language-plaintext highlighter-rouge">k8s-m02</code> node, the kubelet creates this Pod automatically now.</p>
+
+<p>To verify,</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+demo-6c54f77c95-mgz7f   1/1     Running   1          5d22h
+demo-6c54f77c95-q679r   1/1     Running   1          4d22h
+demo-6c54f77c95-qqzbf   1/1     Running   1          4d22h
+demo-6c54f77c95-vjgc2   1/1     Running   1          4d22h
+demo-6c54f77c95-wv78b   1/1     Running   1          5d22h
+demo-ds-gtcf7           1/1     Running   0          14h
+demo-ds-kkw4g           1/1     Running   0          14h
+nginx-k8s-m02           1/1     Running   0          18s
+nginx-manual            1/1     Running   1          4d21h
+nginx-no-tolerate       1/1     Running   1          4d14h
+nginx-node-selector     1/1     Running   0          2d15h
+nginx-taint-demo        1/1     Running   1          4d14h
+with-node-affinity      1/1     Running   0          2d15h
+</code></pre></div></div>
+
+<p>Our nginx static pod is successfully Running on <code class="language-plaintext highlighter-rouge">k8s-m02</code> node, as seen above, as pod named <code class="language-plaintext highlighter-rouge">nginx-k8s-m02</code>.</p>
+
+<p>Another way to confirm that this Pod is indeed running on the <code class="language-plaintext highlighter-rouge">k8s-m02</code> node is</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide | <span class="nb">grep </span>m02
+demo-ds-gtcf7           1/1     Running   0          14h     10.244.1.5    k8s-m02   &lt;none&gt;           &lt;none&gt;
+nginx-k8s-m02           1/1     Running   0          18m     10.244.1.6    k8s-m02   &lt;none&gt;           &lt;none&gt;
+nginx-node-selector     1/1     Running   0          2d15h   10.244.1.2    k8s-m02   &lt;none&gt;           &lt;none&gt;
+with-node-affinity      1/1     Running   0          2d15h   10.244.1.3    k8s-m02   &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-02-11T10:55:04+05:30">February 11, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Static+Pods%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F11%2Fkubernetes-static-pods.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F11%2Fkubernetes-static-pods.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F11%2Fkubernetes-static-pods.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/02/11/kubernetes-rolling-update.html" class="pagination--pager" title="Kubernetes Rolling Updates
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/02/15/kubernetes-certificates.html" class="pagination--pager" title="Kubernetes Certificates
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

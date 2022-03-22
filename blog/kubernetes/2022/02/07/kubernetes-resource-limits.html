@@ -1,0 +1,917 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Resource Limits - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes Resource Limits">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Resource Limits">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/02/07/kubernetes-resource-limits.html">
+
+
+  <meta property="og:description" content="Kubernetes Resource Limits">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-07T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/07/kubernetes-resource-limits.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>My awesome biography constrained to a sentence or two goes here.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Somewhere, USA</span>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Resource Limits">
+    <meta itemprop="description" content="Kubernetes Resource Limits">
+    <meta itemprop="datePublished" content="2022-02-07T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/07/kubernetes-resource-limits.html" class="u-url" itemprop="url">Kubernetes Resource Limits
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-02-07T10:55:04+05:30">February 7, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu"><li><a href="#kubernetes-resource-limits">Kubernetes Resource Limits</a><ul><li><a href="#resource-limits">Resource Limits</a></li></ul></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="kubernetes-resource-limits">Kubernetes Resource Limits</h1>
+
+<h3 id="resource-limits">Resource Limits</h3>
+
+<p>Earlier, we have created a namespace called <code class="language-plaintext highlighter-rouge">prod</code>. Let’s describe it to see if any resource quota applied to it.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe namespaces prod
+Name:         prod
+Labels:       kubernetes.io/metadata.name<span class="o">=</span>prod
+Annotations:  &lt;none&gt;
+Status:       Active
+
+No resource quota.
+
+No LimitRange resource.
+</code></pre></div></div>
+<p>Let’s define a quota using the example shown here:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create resourcequota <span class="nt">-h</span>
+Create a resource quota with the specified name, hard limits, and optional scopes.
+
+Aliases:
+quota, resourcequota
+
+Examples:
+  <span class="c"># Create a new resource quota named my-quota</span>
+  kubectl create quota my-quota
+<span class="nt">--hard</span><span class="o">=</span><span class="nv">cpu</span><span class="o">=</span>1,memory<span class="o">=</span>1G,pods<span class="o">=</span>2,services<span class="o">=</span>3,replicationcontrollers<span class="o">=</span>2,resourcequotas<span class="o">=</span>1,secrets<span class="o">=</span>5,persistentvolumeclaims<span class="o">=</span>10
+
+  <span class="c"># Create a new resource quota named best-effort</span>
+  kubectl create quota best-effort <span class="nt">--hard</span><span class="o">=</span><span class="nv">pods</span><span class="o">=</span>100 <span class="nt">--scopes</span><span class="o">=</span>BestEffort
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create quota my-quota <span class="nt">--hard</span><span class="o">=</span><span class="nv">cpu</span><span class="o">=</span>1,memory<span class="o">=</span>1G,pods<span class="o">=</span>2,services<span class="o">=</span>3 <span class="nt">-n</span> prod
+resourcequota/my-quota created
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe ns prod
+Name:         prod
+Labels:       kubernetes.io/metadata.name<span class="o">=</span>prod
+Annotations:  &lt;none&gt;
+Status:       Active
+
+Resource Quotas
+  Name:     my-quota
+  Resource  Used  Hard
+  <span class="nt">--------</span>  <span class="nt">---</span>   <span class="nt">---</span>
+  cpu       0     1
+  memory    0     1G
+  pods      0     2
+  services  0     3
+
+No LimitRange resource.
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get quota <span class="nt">-n</span> prod
+NAME       AGE     REQUEST                                            LIMIT
+my-quota   4m40s   cpu: 0/1, memory: 0/1G, pods: 0/2, services: 0/3
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe quota <span class="nt">-n</span> prod
+Name:       my-quota
+Namespace:  prod
+Resource    Used  Hard
+<span class="nt">--------</span>    <span class="nt">----</span>  <span class="nt">----</span>
+cpu         0     1
+memory      0     1G
+pods        0     2
+services    0     3
+</code></pre></div></div>
+<p>Let’s try create a pod in this namespace and see what happens?</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl run nginx-without-cpu <span class="nt">--image</span><span class="o">=</span>nginx <span class="nt">-n</span> prod
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: pods <span class="s2">"nginx-without-cpu"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Pod creation failed with an error (Forbidden).
+Let’s try create a deployment in this namespace and see what happens?</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create deployment test-quota <span class="nt">--image</span><span class="o">=</span>nginx <span class="nt">--replicas</span><span class="o">=</span>3 <span class="nt">-n</span> prod
+deployment.apps/test-quota created
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deploy <span class="nt">-n</span> prod
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+test-quota   0/3     0            0           47s
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get events <span class="nt">-n</span> prod
+LAST SEEN   TYPE      REASON              OBJECT                             MESSAGE
+104s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-bgsxd"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+103s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-w9p4z"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+103s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-swwgq"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+103s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-tjlsb"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+103s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-ll2m9"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+103s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-c72mn"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+103s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-hqzf4"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+103s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-bdh4w"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+102s        Warning   FailedCreate        replicaset/test-quota-666dfd598f   Error creating: pods <span class="s2">"test-quota-666dfd598f-gggw2"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+21s         Warning   FailedCreate        replicaset/test-quota-666dfd598f   <span class="o">(</span>combined from similar events<span class="o">)</span>: Error creating: pods <span class="s2">"test-quota-666dfd598f-b5rh6"</span> is forbidden: failed quota: my-quota: must specify cpu,memory
+104s        Normal    ScalingReplicaSet   deployment/test-quota              Scaled up replica <span class="nb">set </span>test-quota-666dfd598f to 3
+</code></pre></div></div>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pod-quota.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">quota-mem-cpu-demo</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">prod</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">quota-mem-cpu-demo-ctr</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">resources</span><span class="pi">:</span>
+      <span class="na">limits</span><span class="pi">:</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">800Mi"</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">800m"</span>
+      <span class="na">requests</span><span class="pi">:</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">600Mi"</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">400m"</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pod-quota.yaml
+pod/quota-mem-cpu-demo created
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-n</span> prod
+NAME                 READY   STATUS    RESTARTS   AGE
+quota-mem-cpu-demo   1/1     Running   0          9s
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe ns prod
+Name:         prod
+Labels:       kubernetes.io/metadata.name<span class="o">=</span>prod
+Annotations:  &lt;none&gt;
+Status:       Active
+
+Resource Quotas
+  Name:     my-quota
+  Resource  Used   Hard
+  <span class="nt">--------</span>  <span class="nt">---</span>    <span class="nt">---</span>
+  cpu       400m   1
+  memory    600Mi  1G
+  pods      1      2
+  services  0      3
+
+No LimitRange resource.
+</code></pre></div></div>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pod-quota-2.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">quota-mem-cpu-demo-2</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">prod</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">quota-mem-cpu-demo-ctr-2</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">resources</span><span class="pi">:</span>
+      <span class="na">limits</span><span class="pi">:</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">800Mi"</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">800m"</span>
+      <span class="na">requests</span><span class="pi">:</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">600Mi"</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">400m"</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pod-quota-2.yaml
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: error when creating <span class="s2">"pod-quota-2.yaml"</span>: pods <span class="s2">"quota-mem-cpu-demo-2"</span> is forbidden: exceeded quota: my-quota, requested: <span class="nv">memory</span><span class="o">=</span>600Mi, used: <span class="nv">memory</span><span class="o">=</span>600Mi, limited: <span class="nv">memory</span><span class="o">=</span>1G
+</code></pre></div></div>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-02-07T10:55:04+05:30">February 7, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Resource+Limits%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F07%2Fkubernetes-resource-limits.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F07%2Fkubernetes-resource-limits.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F07%2Fkubernetes-resource-limits.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/02/07/kubernetes-logging-monitoring.html" class="pagination--pager" title="Kubernetes Logging and Monitoring
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/02/07/kubernetes-scheduling.html" class="pagination--pager" title="Kubernetes Scheduling
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

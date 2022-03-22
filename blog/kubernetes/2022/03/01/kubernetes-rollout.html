@@ -1,0 +1,974 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubectl Rollout - Pradeep Gadde</title>
+<meta name="description" content="Kubectl Rollout">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubectl Rollout">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/03/01/kubernetes-rollout.html">
+
+
+  <meta property="og:description" content="Kubectl Rollout">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-03-01T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/03/01/kubernetes-rollout.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubectl Rollout">
+    <meta itemprop="description" content="Kubectl Rollout">
+    <meta itemprop="datePublished" content="2022-03-01T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/03/01/kubernetes-rollout.html" class="u-url" itemprop="url">Kubectl Rollout
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-01T10:55:04+05:30">March 1, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h1 id="kubectl-rollout">Kubectl Rollout</h1>
+
+<h3 id="rollout">Rollout</h3>
+
+<p>Let us take a look at the current deployments.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployment
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+kodekloud   4/4     4            4           13d
+</code></pre></div></div>
+
+<p>To manage the rollout of a resource like deployments, kubernetes provides the <code class="language-plaintext highlighter-rouge">rollout</code> option, with which we can view rollout history, see the status of the rollout and even undo a previous rollout.</p>
+
+<p>Here is the detailed help information.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl rollout <span class="nt">-h</span>
+Manage the rollout of a resource.
+
+ Valid resource types include:
+
+  <span class="k">*</span>  deployments
+  <span class="k">*</span>  daemonsets
+  <span class="k">*</span>  statefulsets
+
+Examples:
+  <span class="c"># Rollback to the previous deployment</span>
+  kubectl rollout undo deployment/abc
+
+  <span class="c"># Check the rollout status of a daemonset</span>
+  kubectl rollout status daemonset/foo
+
+Available Commands:
+  <span class="nb">history     </span>View rollout <span class="nb">history
+  </span>pause       Mark the provided resource as paused
+  restart     Restart a resource
+  resume      Resume a paused resource
+  status      Show the status of the rollout
+  undo        Undo a previous rollout
+
+Usage:
+  kubectl rollout SUBCOMMAND <span class="o">[</span>options]
+
+Use <span class="s2">"kubectl &lt;command&gt; --help"</span> <span class="k">for </span>more information about a given command.
+Use <span class="s2">"kubectl options"</span> <span class="k">for </span>a list of global command-line options <span class="o">(</span>applies to all commands<span class="o">)</span><span class="nb">.</span>
+</code></pre></div></div>
+<p>Let us use this option to view the history of our <code class="language-plaintext highlighter-rouge">kodekloud</code> deployment.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl rollout <span class="nb">history </span>deployment kodekloud
+deployment.apps/kodekloud
+REVISION  CHANGE-CAUSE
+1         &lt;none&gt;
+3         &lt;none&gt;
+4         &lt;none&gt;
+</code></pre></div></div>
+
+<p>We do see that there are multiple revisions to this <code class="language-plaintext highlighter-rouge">kodekloud</code> deployment, but we do not see any <code class="language-plaintext highlighter-rouge">CHANGE-CAUSE</code>.</p>
+
+<p>Even in the description, we do see only one line related to <code class="language-plaintext highlighter-rouge">deployment.kubernetes.io/revision</code>. Pay attention to the <code class="language-plaintext highlighter-rouge">Annotations</code> section.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe deployments.apps
+Name:               kodekloud
+Namespace:          default
+CreationTimestamp:  Tue, 15 Feb 2022 12:43:38 +0530
+Labels:             <span class="nv">app</span><span class="o">=</span>kodekloud
+Annotations:        deployment.kubernetes.io/revision: 4
+Selector:           <span class="nv">app</span><span class="o">=</span>kodekloud
+Replicas:           4 desired | 4 updated | 4 total | 4 available | 0 unavailable
+StrategyType:       Recreate
+MinReadySeconds:    0
+Pod Template:
+  Labels:  <span class="nv">app</span><span class="o">=</span>kodekloud
+  Containers:
+   webapp-color:
+    Image:        kodekloud/webapp-color:v2
+    Port:         &lt;none&gt;
+    Host Port:    &lt;none&gt;
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Conditions:
+  Type           Status  Reason
+  <span class="nt">----</span>           <span class="nt">------</span>  <span class="nt">------</span>
+  Progressing    True    NewReplicaSetAvailable
+  Available      True    MinimumReplicasAvailable
+OldReplicaSets:  &lt;none&gt;
+NewReplicaSet:   kodekloud-8477b7849 <span class="o">(</span>4/4 replicas created<span class="o">)</span>
+Events:          &lt;none&gt;
+</code></pre></div></div>
+
+<p>Create a new deployment</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat nginx-deployment.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">nginx-deployment</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">nginx</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">3</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">nginx</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">nginx</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">nginx:1.20</span>
+        <span class="na">ports</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">80</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl apply <span class="nt">-f</span> nginx-deployment.yaml
+deployment.apps/nginx-deployment created
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployments.apps
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+kodekloud          4/4     4            4           13d
+nginx-deployment   3/3     3            3           31s
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe deployments.apps nginx-deployment
+Name:                   nginx-deployment
+Namespace:              default
+CreationTimestamp:      Tue, 01 Mar 2022 06:05:50 +0530
+Labels:                 <span class="nv">app</span><span class="o">=</span>nginx
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               <span class="nv">app</span><span class="o">=</span>nginx
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  <span class="nv">app</span><span class="o">=</span>nginx
+  Containers:
+   nginx:
+    Image:        nginx:1.20
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Conditions:
+  Type           Status  Reason
+  <span class="nt">----</span>           <span class="nt">------</span>  <span class="nt">------</span>
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  &lt;none&gt;
+NewReplicaSet:   nginx-deployment-7b96fbf5d8 <span class="o">(</span>3/3 replicas created<span class="o">)</span>
+Events:
+  Type     Reason                 Age   From                   Message
+  <span class="nt">----</span>     <span class="nt">------</span>                 <span class="nt">----</span>  <span class="nt">----</span>                   <span class="nt">-------</span>
+  Warning  ReplicaSetCreateError  33s   deployment-controller  Failed to create new replica <span class="nb">set</span> <span class="s2">"nginx-deployment-7b96fbf5d8"</span>: Unauthorized
+  Normal   ScalingReplicaSet      33s   deployment-controller  Scaled up replica <span class="nb">set </span>nginx-deployment-7b96fbf5d8 to 3
+</code></pre></div></div>
+
+<h3 id="update-deployment-using-kubectl-set">Update Deployment (using Kubectl Set)</h3>
+
+<p>Earlier we have used <code class="language-plaintext highlighter-rouge">kubectl edit</code> to make changes to an existing deployment.</p>
+
+<p>Here we will explore another option <code class="language-plaintext highlighter-rouge">kubectl set</code>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl <span class="nb">set</span> <span class="nt">-h</span>
+Configure application resources.
+
+ These commands <span class="nb">help </span>you make changes to existing application resources.
+
+Available Commands:
+  <span class="nb">env            </span>Update environment variables on a pod template
+  image          Update the image of a pod template
+  resources      Update resource requests/limits on objects with pod templates
+  selector       Set the selector on a resource
+  serviceaccount Update the service account of a resource
+  subject        Update the user, group, or service account <span class="k">in </span>a role binding or cluster role binding
+
+Usage:
+  kubectl <span class="nb">set </span>SUBCOMMAND <span class="o">[</span>options]
+
+Use <span class="s2">"kubectl &lt;command&gt; --help"</span> <span class="k">for </span>more information about a given command.
+Use <span class="s2">"kubectl options"</span> <span class="k">for </span>a list of global command-line options <span class="o">(</span>applies to all commands<span class="o">)</span><span class="nb">.</span>
+</code></pre></div></div>
+<p>Let us set the image for our <code class="language-plaintext highlighter-rouge">nginx-deployment</code> to a new version <code class="language-plaintext highlighter-rouge">1.21</code>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl <span class="nb">set </span>image deployment/nginx-deployment <span class="nv">nginx</span><span class="o">=</span>nginx:1.21
+deployment.apps/nginx-deployment image updated
+</code></pre></div></div>
+<p>We can see the rollout status like this, using the <code class="language-plaintext highlighter-rouge">kubectl rollout status</code> command.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl rollout status deployment/nginx-deployment
+
+deployment <span class="s2">"nginx-deployment"</span> successfully rolled out
+</code></pre></div></div>
+<p>Describe the deployment</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe deployments.apps nginx-deployment
+Name:                   nginx-deployment
+Namespace:              default
+CreationTimestamp:      Tue, 01 Mar 2022 06:05:50 +0530
+Labels:                 <span class="nv">app</span><span class="o">=</span>nginx
+Annotations:            deployment.kubernetes.io/revision: 2
+Selector:               <span class="nv">app</span><span class="o">=</span>nginx
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  <span class="nv">app</span><span class="o">=</span>nginx
+  Containers:
+   nginx:
+    Image:        nginx:1.21
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Conditions:
+  Type           Status  Reason
+  <span class="nt">----</span>           <span class="nt">------</span>  <span class="nt">------</span>
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  &lt;none&gt;
+NewReplicaSet:   nginx-deployment-5778cd94ff <span class="o">(</span>3/3 replicas created<span class="o">)</span>
+Events:
+  Type     Reason                 Age    From                   Message
+  <span class="nt">----</span>     <span class="nt">------</span>                 <span class="nt">----</span>   <span class="nt">----</span>                   <span class="nt">-------</span>
+  Warning  ReplicaSetCreateError  10m    deployment-controller  Failed to create new replica <span class="nb">set</span> <span class="s2">"nginx-deployment-7b96fbf5d8"</span>: Unauthorized
+  Normal   ScalingReplicaSet      10m    deployment-controller  Scaled up replica <span class="nb">set </span>nginx-deployment-7b96fbf5d8 to 3
+  Normal   ScalingReplicaSet      3m18s  deployment-controller  Scaled up replica <span class="nb">set </span>nginx-deployment-5778cd94ff to 1
+  Normal   ScalingReplicaSet      3m12s  deployment-controller  Scaled down replica <span class="nb">set </span>nginx-deployment-7b96fbf5d8 to 2
+  Normal   ScalingReplicaSet      3m12s  deployment-controller  Scaled up replica <span class="nb">set </span>nginx-deployment-5778cd94ff to 2
+  Normal   ScalingReplicaSet      3m10s  deployment-controller  Scaled down replica <span class="nb">set </span>nginx-deployment-7b96fbf5d8 to 1
+  Normal   ScalingReplicaSet      3m10s  deployment-controller  Scaled up replica <span class="nb">set </span>nginx-deployment-5778cd94ff to 3
+  Normal   ScalingReplicaSet      3m3s   deployment-controller  Scaled down replica <span class="nb">set </span>nginx-deployment-7b96fbf5d8 to 0
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-03-01T10:55:04+05:30">March 1, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubectl+Rollout%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F03%2F01%2Fkubernetes-rollout.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F03%2F01%2Fkubernetes-rollout.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F03%2F01%2Fkubernetes-rollout.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/03/01/kubernetes-rollback.html" class="pagination--pager" title="Kubernetes Deployment Rollback
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" class="pagination--pager" title="Kubernetes Networking with Calico CNI
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

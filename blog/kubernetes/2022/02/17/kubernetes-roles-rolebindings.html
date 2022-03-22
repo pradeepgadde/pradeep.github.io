@@ -1,0 +1,1084 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Roles and RoleBindings - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes Roles and RoleBindings">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Roles and RoleBindings">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/02/17/kubernetes-roles-rolebindings.html">
+
+
+  <meta property="og:description" content="Kubernetes Roles and RoleBindings">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-17T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/17/kubernetes-roles-rolebindings.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Roles and RoleBindings">
+    <meta itemprop="description" content="Kubernetes Roles and RoleBindings">
+    <meta itemprop="datePublished" content="2022-02-17T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/17/kubernetes-roles-rolebindings.html" class="u-url" itemprop="url">Kubernetes Roles and RoleBindings
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-02-17T10:55:04+05:30">February 17, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          6 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h1 id="kubernetes-roles-and-rolebindings">Kubernetes Roles and RoleBindings</h1>
+
+<p>We can see that the current user is <code class="language-plaintext highlighter-rouge">k8s</code>, how can we change this to some other user, like <code class="language-plaintext highlighter-rouge">pradeep</code> user?</p>
+
+<p>For that we need the signed certificate for that user first. We can retrieve the signed/issued certificate using this.
+Pay attention to the Status section, there is the certificate.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get csr/pradeep <span class="nt">-o</span> yaml
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      <span class="o">{</span><span class="s2">"apiVersion"</span>:<span class="s2">"certificates.k8s.io/v1"</span>,<span class="s2">"kind"</span>:<span class="s2">"CertificateSigningRequest"</span>,<span class="s2">"metadata"</span>:<span class="o">{</span><span class="s2">"annotations"</span>:<span class="o">{}</span>,<span class="s2">"name"</span>:<span class="s2">"pradeep"</span><span class="o">}</span>,<span class="s2">"spec"</span>:<span class="o">{</span><span class="s2">"expirationSeconds"</span>:86400,<span class="s2">"request"</span>:<span class="s2">"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1Z6Q0NBVDhDQVFBd0VqRVFNQTRHQTFVRUF3d0hjSEpoWkdWbGNEQ0NBU0l3RFFZSktvWklodmNOQVFFQgpCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFNVzRxa29NK0ZDRUxwa2oySUtiTnZjeGRNNGxnMS8xMnlXZjA1NHpPMVdrCmJEQTlrQnpFdEtRb0ptR1ZZRXVLLzZHT0l0TE90WU10Z1BscTJyblJZMHF5c1VrTTMwOUo1R0RUblhpbDJsZUUKU0pjL2tuWkYxRlB3SFVxeWxGdHg5OUZwa3N3OWI1YTNSVmQweXp6K1JyOVhGcFlTR2d5WjgrcUQ5WHIvOE9jWgo0NW1PQnpoaGpKeDRYRW9NSC94aGpIK1FPc1pkaHY2Q2wrdDdZVmgrU2dzdExpVEQ3YTZ0ZXh2NUVVdFNvMllxCkJabXpEcGUzUnVMTlZYd2Z1bnVQdlNUTXdvYTZDQ3h4VEJYK2tZdTJQa2NRcVBTeTNzZlR6Y2xrbWVNbXVKVUQKdmZZTDFxNnFCa3c0a2hFckxXVVVLcGVMckdvMi9vZ01TcXJNVXF0M0k4Y0NBd0VBQWFBQU1BMEdDU3FHU0liMwpEUUVCQ3dVQUE0SUJBUUF1aHV3NWIvV2l0cms2b2YrNDAwaWxqQXEyY3dmdjdRdDNaaWZTUVVzOVEzMVdnM2d3CnZZNUd4djFDV2xtd002cWttU0lXRC9MY0lzcTJFanNJbkNSNzFhbXBKaEhHYWFOZGFrVlIxNlcyU2lxd040NjUKcGtpYmlpVEVqQUJZQ1pOWnk1dG5KVkpKSVFLM1lUM3lNK2EwVXhOQXFTTHFkU3FIV2d3am5MVktCVVBMWFBrdQpMa1VqejBWTEFXRkI3TXN4OXR2OTJQT1NZNFVULzJSN0xPdC9yZzFYeklyTmxtTHRKUUJYMUo1YkpRb0NrU1lPCmI1eklDTXZrS2FpVlloZUZ6Qi8vWitNcnZiWHgwREdkYTBWTnNKT29QeDF5VzRpRTRTQVY1SE9pbDlpd0Q2emkKdjQyblZlb2R5WjdQNlp3M241OG5tTmRWUXk1dmVGYlI5UEZCCi0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo="</span>,<span class="s2">"signerName"</span>:<span class="s2">"kubernetes.io/kube-apiserver-client"</span>,<span class="s2">"usages"</span>:[<span class="s2">"client auth"</span><span class="o">]}}</span>
+  creationTimestamp: <span class="s2">"2022-02-17T05:47:16Z"</span>
+  name: pradeep
+  resourceVersion: <span class="s2">"63056"</span>
+  uid: 585f7670-134c-4062-a649-442054314407
+spec:
+  expirationSeconds: 86400
+  <span class="nb">groups</span>:
+  - system:masters
+  - system:authenticated
+  request: <span class="nv">LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1Z6Q0NBVDhDQVFBd0VqRVFNQTRHQTFVRUF3d0hjSEpoWkdWbGNEQ0NBU0l3RFFZSktvWklodmNOQVFFQgpCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFNVzRxa29NK0ZDRUxwa2oySUtiTnZjeGRNNGxnMS8xMnlXZjA1NHpPMVdrCmJEQTlrQnpFdEtRb0ptR1ZZRXVLLzZHT0l0TE90WU10Z1BscTJyblJZMHF5c1VrTTMwOUo1R0RUblhpbDJsZUUKU0pjL2tuWkYxRlB3SFVxeWxGdHg5OUZwa3N3OWI1YTNSVmQweXp6K1JyOVhGcFlTR2d5WjgrcUQ5WHIvOE9jWgo0NW1PQnpoaGpKeDRYRW9NSC94aGpIK1FPc1pkaHY2Q2wrdDdZVmgrU2dzdExpVEQ3YTZ0ZXh2NUVVdFNvMllxCkJabXpEcGUzUnVMTlZYd2Z1bnVQdlNUTXdvYTZDQ3h4VEJYK2tZdTJQa2NRcVBTeTNzZlR6Y2xrbWVNbXVKVUQKdmZZTDFxNnFCa3c0a2hFckxXVVVLcGVMckdvMi9vZ01TcXJNVXF0M0k4Y0NBd0VBQWFBQU1BMEdDU3FHU0liMwpEUUVCQ3dVQUE0SUJBUUF1aHV3NWIvV2l0cms2b2YrNDAwaWxqQXEyY3dmdjdRdDNaaWZTUVVzOVEzMVdnM2d3CnZZNUd4djFDV2xtd002cWttU0lXRC9MY0lzcTJFanNJbkNSNzFhbXBKaEhHYWFOZGFrVlIxNlcyU2lxd040NjUKcGtpYmlpVEVqQUJZQ1pOWnk1dG5KVkpKSVFLM1lUM3lNK2EwVXhOQXFTTHFkU3FIV2d3am5MVktCVVBMWFBrdQpMa1VqejBWTEFXRkI3TXN4OXR2OTJQT1NZNFVULzJSN0xPdC9yZzFYeklyTmxtTHRKUUJYMUo1YkpRb0NrU1lPCmI1eklDTXZrS2FpVlloZUZ6Qi8vWitNcnZiWHgwREdkYTBWTnNKT29QeDF5VzRpRTRTQVY1SE9pbDlpd0Q2emkKdjQyblZlb2R5WjdQNlp3M241OG5tTmRWUXk1dmVGYlI5UEZCCi0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo</span><span class="o">=</span>
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+  username: minikube-user
+status:
+  certificate: <span class="nv">LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMrRENDQWVDZ0F3SUJBZ0lSQUlHNEdtUk5tdmczZENXZHhFcTBIUEV3RFFZSktvWklodmNOQVFFTEJRQXcKRlRFVE1CRUdBMVVFQXhNS2JXbHVhV3QxWW1WRFFUQWVGdzB5TWpBeU1UY3dOVFF6TWpCYUZ3MHlNakF5TVRndwpOVFF6TWpCYU1CSXhFREFPQmdOVkJBTVRCM0J5WVdSbFpYQXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCCkR3QXdnZ0VLQW9JQkFRREZ1S3BLRFBoUWhDNlpJOWlDbXpiM01YVE9KWU5mOWRzbG45T2VNenRWcEd3d1BaQWMKeExTa0tDWmhsV0JMaXYraGppTFN6cldETFlENWF0cTUwV05Lc3JGSkROOVBTZVJnMDUxNHBkcFhoRWlYUDVKMgpSZFJUOEIxS3NwUmJjZmZSYVpMTVBXK1d0MFZYZE1zOC9rYS9WeGFXRWhvTW1mUHFnL1Y2Ly9EbkdlT1pqZ2M0CllZeWNlRnhLREIvOFlZeC9rRHJHWFliK2dwZnJlMkZZZmtvTExTNGt3KzJ1clhzYitSRkxVcU5tS2dXWnN3NlgKdDBiaXpWVjhIN3A3ajcwa3pNS0d1Z2dzY1V3Vi9wR0x0ajVIRUtqMHN0N0gwODNKWkpuakpyaVZBNzMyQzlhdQpxZ1pNT0pJUkt5MWxGQ3FYaTZ4cU52NklERXFxekZLcmR5UEhBZ01CQUFHalJqQkVNQk1HQTFVZEpRUU1NQW9HCkNDc0dBUVVGQndNQ01Bd0dBMVVkRXdFQi93UUNNQUF3SHdZRFZSMGpCQmd3Rm9BVWkvb3hwNHQyM3NiMVBjQy8KSlFVZEJYaTVna0F3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUp3R1dVR1IzRVd3bnc2cVdoUVJRTHY1aUFuOQpESmVhb3o1M25VVmhuV0tzRWdETXhzcTgvcHRVK0NJalgvR3NXS2hSaE1nU3Q0ZHR1cEswMHROVnB3cGRQTExQCm5kWHRzZmhmQmRPV1hNWDVBSmNXNTQ2Sk02eVhkQ1VXbnBmSE5LTTJ5bnRqb0FPSXp4azNhUGcxeDNuckdCZVkKQzZ6UmhRdWRYTitwdFFNK0lRa0pYVzF4TWhSeVRoNHU2bXI3c2RTTGdQZ0dsaXZGNGE2Ukx3YWttOWdoNWJtOApIUkxYZWpuTVo0TFVUOExYWmgyR0tRenRrR1QwMkgxanNDMTZpYnJpbmNFSFpxUXVvd0Z3TUMxSUdhS1l0d1BkCnMwVFQxcFZBR3N1VzRlYUpPT3B2MmtpcVVITkExLzBrb1IwYnpscFhObFZIZzVySlY1dFBtWXp4YjRjPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg</span><span class="o">==</span>
+  conditions:
+  - lastTransitionTime: <span class="s2">"2022-02-17T05:48:20Z"</span>
+    lastUpdateTime: <span class="s2">"2022-02-17T05:48:20Z"</span>
+    message: This CSR was approved by kubectl certificate approve.
+    reason: KubectlApprove
+    status: <span class="s2">"True"</span>
+    <span class="nb">type</span>: Approved
+</code></pre></div></div>
+
+<p>The certificate value is in Base64-encoded format under status.certificate.</p>
+
+<p>Let us export the issued certificate from the CertificateSigningRequest.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMrRENDQWVDZ0F3SUJBZ0lSQUlHNEdtUk5tdmczZENXZHhFcTBIUEV3RFFZSktvWklodmNOQVFFTEJRQXcKRlRFVE1CRUdBMVVFQXhNS2JXbHVhV3QxWW1WRFFUQWVGdzB5TWpBeU1UY3dOVFF6TWpCYUZ3MHlNakF5TVRndwpOVFF6TWpCYU1CSXhFREFPQmdOVkJBTVRCM0J5WVdSbFpYQXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCCkR3QXdnZ0VLQW9JQkFRREZ1S3BLRFBoUWhDNlpJOWlDbXpiM01YVE9KWU5mOWRzbG45T2VNenRWcEd3d1BaQWMKeExTa0tDWmhsV0JMaXYraGppTFN6cldETFlENWF0cTUwV05Lc3JGSkROOVBTZVJnMDUxNHBkcFhoRWlYUDVKMgpSZFJUOEIxS3NwUmJjZmZSYVpMTVBXK1d0MFZYZE1zOC9rYS9WeGFXRWhvTW1mUHFnL1Y2Ly9EbkdlT1pqZ2M0CllZeWNlRnhLREIvOFlZeC9rRHJHWFliK2dwZnJlMkZZZmtvTExTNGt3KzJ1clhzYitSRkxVcU5tS2dXWnN3NlgKdDBiaXpWVjhIN3A3ajcwa3pNS0d1Z2dzY1V3Vi9wR0x0ajVIRUtqMHN0N0gwODNKWkpuakpyaVZBNzMyQzlhdQpxZ1pNT0pJUkt5MWxGQ3FYaTZ4cU52NklERXFxekZLcmR5UEhBZ01CQUFHalJqQkVNQk1HQTFVZEpRUU1NQW9HCkNDc0dBUVVGQndNQ01Bd0dBMVVkRXdFQi93UUNNQUF3SHdZRFZSMGpCQmd3Rm9BVWkvb3hwNHQyM3NiMVBjQy8KSlFVZEJYaTVna0F3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUp3R1dVR1IzRVd3bnc2cVdoUVJRTHY1aUFuOQpESmVhb3o1M25VVmhuV0tzRWdETXhzcTgvcHRVK0NJalgvR3NXS2hSaE1nU3Q0ZHR1cEswMHROVnB3cGRQTExQCm5kWHRzZmhmQmRPV1hNWDVBSmNXNTQ2Sk02eVhkQ1VXbnBmSE5LTTJ5bnRqb0FPSXp4azNhUGcxeDNuckdCZVkKQzZ6UmhRdWRYTitwdFFNK0lRa0pYVzF4TWhSeVRoNHU2bXI3c2RTTGdQZ0dsaXZGNGE2Ukx3YWttOWdoNWJtOApIUkxYZWpuTVo0TFVUOExYWmgyR0tRenRrR1QwMkgxanNDMTZpYnJpbmNFSFpxUXVvd0Z3TUMxSUdhS1l0d1BkCnMwVFQxcFZBR3N1VzRlYUpPT3B2MmtpcVVITkExLzBrb1IwYnpscFhObFZIZzVySlY1dFBtWXp4YjRjPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="</span> | <span class="nb">base64</span> <span class="nt">-d</span> <span class="o">&gt;</span> pradeep.crt
+</code></pre></div></div>
+<p>Just to confirm, let us view the certificate.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span><span class="nb">cat </span>pradeep.crt
+<span class="nt">-----BEGIN</span> CERTIFICATE-----
+MIIC+DCCAeCgAwIBAgIRAIG4GmRNmvg3dCWdxEq0HPEwDQYJKoZIhvcNAQELBQAw
+FTETMBEGA1UEAxMKbWluaWt1YmVDQTAeFw0yMjAyMTcwNTQzMjBaFw0yMjAyMTgw
+NTQzMjBaMBIxEDAOBgNVBAMTB3ByYWRlZXAwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+DwAwggEKAoIBAQDFuKpKDPhQhC6ZI9iCmzb3MXTOJYNf9dsln9OeMztVpGwwPZAc
+xLSkKCZhlWBLiv+hjiLSzrWDLYD5atq50WNKsrFJDN9PSeRg0514pdpXhEiXP5J2
+RdRT8B1KspRbcffRaZLMPW+Wt0VXdMs8/ka/VxaWEhoMmfPqg/V6//DnGeOZjgc4
+YYyceFxKDB/8YYx/kDrGXYb+gpfre2FYfkoLLS4kw+2urXsb+RFLUqNmKgWZsw6X
+t0bizVV8H7p7j70kzMKGuggscUwV/pGLtj5HEKj0st7H083JZJnjJriVA732C9au
+qgZMOJIRKy1lFCqXi6xqNv6IDEqqzFKrdyPHAgMBAAGjRjBEMBMGA1UdJQQMMAoG
+CCsGAQUFBwMCMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUi/oxp4t23sb1PcC/
+JQUdBXi5gkAwDQYJKoZIhvcNAQELBQADggEBAJwGWUGR3EWwnw6qWhQRQLv5iAn9
+DJeaoz53nUVhnWKsEgDMxsq8/ptU+CIjX/GsWKhRhMgSt4dtupK00tNVpwpdPLLP
+ndXtsfhfBdOWXMX5AJcW546JM6yXdCUWnpfHNKM2yntjoAOIzxk3aPg1x3nrGBeY
+C6zRhQudXN+ptQM+IQkJXW1xMhRyTh4u6mr7sdSLgPgGlivF4a6RLwakm9gh5bm8
+HRLXejnMZ4LUT8LXZh2GKQztkGT02H1jsC16ibrincEHZqQuowFwMC1IGaKYtwPd
+s0TT1pVAGsuW4eaJOOpv2kiqUHNA1/0koR0bzlpXNlVHg5rJV5tPmYzxb4c<span class="o">=</span>
+<span class="nt">-----END</span> CERTIFICATE-----
+</code></pre></div></div>
+
+<h3 id="roles-and-rolebindings">Roles and RoleBindings</h3>
+
+<p>With the certificate created it is time to define the Role and RoleBinding for this user <code class="language-plaintext highlighter-rouge">pradeep</code> to access Kubernetes cluster resources.</p>
+
+<p>First let us create a role called <code class="language-plaintext highlighter-rouge">developer</code> who can create, get, list and update all pods.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create role developer <span class="nt">--verb</span><span class="o">=</span>create <span class="nt">--verb</span><span class="o">=</span>get <span class="nt">--verb</span><span class="o">=</span>list <span class="nt">--verb</span><span class="o">=</span>update <span class="nt">--verb</span><span class="o">=</span>delete <span class="nt">--resource</span><span class="o">=</span>pods
+role.rbac.authorization.k8s.io/developer created
+</code></pre></div></div>
+<p>Next, we have to bind this role to the user, by creating a role binding and giving it a name, in this case <code class="language-plaintext highlighter-rouge">developer-pradeep</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create rolebinding developer-pradeep <span class="nt">--role</span><span class="o">=</span>developer <span class="nt">--user</span><span class="o">=</span>pradeep
+rolebinding.rbac.authorization.k8s.io/developer-pradeep created
+</code></pre></div></div>
+<p>To verify the role:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get roles
+NAME        CREATED AT
+developer   2022-02-17T06:25:08Z
+</code></pre></div></div>
+<p>Rolebinding:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get rolebindings
+NAME                ROLE             AGE
+developer-pradeep   Role/developer   26s
+</code></pre></div></div>
+
+<p>The last step is to add this user <code class="language-plaintext highlighter-rouge">pradeep</code> into the kubeconfig file.</p>
+
+<p>For this, first, you need to add new credentials:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config set-credentials pradeep <span class="nt">--client-key</span><span class="o">=</span>pradeep.key <span class="nt">--client-certificate</span><span class="o">=</span>pradeep.crt <span class="nt">--embed-certs</span><span class="o">=</span><span class="nb">true
+</span>User <span class="s2">"pradeep"</span> set.
+</code></pre></div></div>
+
+<p>Then, you need to add the context:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config set-context pradeep <span class="nt">--cluster</span><span class="o">=</span>k8s <span class="nt">--user</span><span class="o">=</span>pradeep
+Context <span class="s2">"pradeep"</span> created.
+</code></pre></div></div>
+<p>Let us check the available contexts first.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+<span class="k">*</span>         k8s       k8s       k8s        default
+          pradeep   k8s       pradeep
+</code></pre></div></div>
+<p>We can see there are two, <code class="language-plaintext highlighter-rouge">k8s</code> the old (default) one and the <code class="language-plaintext highlighter-rouge">pradeep</code> context which is new. Looking at the first column <code class="language-plaintext highlighter-rouge">CURRENT</code>, the <code class="language-plaintext highlighter-rouge">*</code> mark is present for the <code class="language-plaintext highlighter-rouge">k8s</code> context, indicating that it is the active context.</p>
+
+<p>With this change, let us take another look at the <code class="language-plaintext highlighter-rouge">kubectl config</code> file.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ kubectl config view</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">clusters</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">cluster</span><span class="pi">:</span>
+    <span class="na">certificate-authority</span><span class="pi">:</span> <span class="s">/Users/pradeep/.minikube/ca.crt</span>
+    <span class="na">extensions</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">extension</span><span class="pi">:</span>
+        <span class="na">last-update</span><span class="pi">:</span> <span class="s">Tue, 15 Feb 2022 12:28:03 IST</span>
+        <span class="na">provider</span><span class="pi">:</span> <span class="s">minikube.sigs.k8s.io</span>
+        <span class="na">version</span><span class="pi">:</span> <span class="s">v1.25.1</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">cluster_info</span>
+    <span class="na">server</span><span class="pi">:</span> <span class="s">https://192.168.177.29:8443</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">k8s</span>
+<span class="na">contexts</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">context</span><span class="pi">:</span>
+    <span class="na">cluster</span><span class="pi">:</span> <span class="s">k8s</span>
+    <span class="na">extensions</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">extension</span><span class="pi">:</span>
+        <span class="na">last-update</span><span class="pi">:</span> <span class="s">Tue, 15 Feb 2022 12:28:03 IST</span>
+        <span class="na">provider</span><span class="pi">:</span> <span class="s">minikube.sigs.k8s.io</span>
+        <span class="na">version</span><span class="pi">:</span> <span class="s">v1.25.1</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">context_info</span>
+    <span class="na">namespace</span><span class="pi">:</span> <span class="s">default</span>
+    <span class="na">user</span><span class="pi">:</span> <span class="s">k8s</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">k8s</span>
+<span class="pi">-</span> <span class="na">context</span><span class="pi">:</span>
+    <span class="na">cluster</span><span class="pi">:</span> <span class="s">k8s</span>
+    <span class="na">user</span><span class="pi">:</span> <span class="s">pradeep</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">pradeep</span>
+<span class="na">current-context</span><span class="pi">:</span> <span class="s">pradeep</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Config</span>
+<span class="na">preferences</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="na">users</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">k8s</span>
+  <span class="na">user</span><span class="pi">:</span>
+    <span class="na">client-certificate</span><span class="pi">:</span> <span class="s">/Users/pradeep/.minikube/profiles/k8s/client.crt</span>
+    <span class="na">client-key</span><span class="pi">:</span> <span class="s">/Users/pradeep/.minikube/profiles/k8s/client.key</span>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">pradeep</span>
+  <span class="na">user</span><span class="pi">:</span>
+    <span class="na">client-certificate-data</span><span class="pi">:</span> <span class="s">REDACTED</span>
+    <span class="na">client-key-data</span><span class="pi">:</span> <span class="s">REDACTED</span>
+</code></pre></div></div>
+
+<p>We can see that , there is still one cluster, but two contexts and two users.</p>
+
+<p>It is time to test all the work done in the last half an hour by switching the context.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config use-context pradeep
+Switched to context <span class="s2">"pradeep"</span><span class="nb">.</span>
+</code></pre></div></div>
+<p>Verify it one more way.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config current-context
+pradeep
+</code></pre></div></div>
+
+<p>Now that we are sure of the current-context, let us get the pods as this new user <code class="language-plaintext highlighter-rouge">pradeep</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods
+NAME                        READY   STATUS             RESTARTS        AGE
+kodekloud-8477b7849-blzrs   1/1     Running            0               46h
+kodekloud-8477b7849-jkfmr   1/1     Running            0               46h
+kodekloud-8477b7849-m65m8   1/1     Running            0               46h
+kodekloud-8477b7849-rgbmn   1/1     Running            0               46h
+kodekloud-change-color      1/1     Running            0               43h
+kodekloud-cm                1/1     Running            0               39h
+kodekloud-env-color         1/1     Running            0               40h
+kodekloud-env-color-2       1/1     Running            0               40h
+kodekloud-secret            1/1     Running            0               29h
+multi-containers            1/2     NotReady           0               28h
+pod-with-init-container     1/1     Running            14 <span class="o">(</span>12m ago<span class="o">)</span>    28h
+</code></pre></div></div>
+<p>Yay! :clap: We could get the pods as user <code class="language-plaintext highlighter-rouge">pradeep</code>.</p>
+
+<p>Let us try to get the nodes this time.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get nodes
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: nodes is forbidden: User <span class="s2">"pradeep"</span> cannot list resource <span class="s2">"nodes"</span> <span class="k">in </span>API group <span class="s2">""</span> at the cluster scope
+</code></pre></div></div>
+
+<p>Try accessing deployments.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployments
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: deployments.apps is forbidden: User <span class="s2">"pradeep"</span> cannot list resource <span class="s2">"deployments"</span> <span class="k">in </span>API group <span class="s2">"apps"</span> <span class="k">in </span>the namespace <span class="s2">"default"</span>
+</code></pre></div></div>
+
+<p>What happened? It is Forbidden. But, this is expected, right?!  We only gave permission for Pods. Isn’t it?</p>
+
+<p>We can’t verify that (if we don’t remember what we have given for this user/role) from the current context.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe roles developer
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: roles.rbac.authorization.k8s.io <span class="s2">"developer"</span> is forbidden: User <span class="s2">"pradeep"</span> cannot get resource <span class="s2">"roles"</span> <span class="k">in </span>API group <span class="s2">"rbac.authorization.k8s.io"</span> <span class="k">in </span>the namespace <span class="s2">"default"</span>
+</code></pre></div></div>
+
+<p>So, we have to switch the context back to <code class="language-plaintext highlighter-rouge">k8s</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config use-context k8s
+Switched to context <span class="s2">"k8s"</span><span class="nb">.</span>
+</code></pre></div></div>
+<p>Describe the <code class="language-plaintext highlighter-rouge">developer</code> role and check what all Resources this role has access to.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe roles developer
+Name:         developer
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+PolicyRule:
+  Resources  Non-Resource URLs  Resource Names  Verbs
+  <span class="nt">---------</span>  <span class="nt">-----------------</span>  <span class="nt">--------------</span>  <span class="nt">-----</span>
+  pods       <span class="o">[]</span>                 <span class="o">[]</span>              <span class="o">[</span>create get list update delete]
+</code></pre></div></div>
+<p>This confirms that, any user who is given this role of <code class="language-plaintext highlighter-rouge">developer</code> can only work with <code class="language-plaintext highlighter-rouge">pods</code>.</p>
+
+<p>Here is the same in YAML form.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ kubectl get roles developer -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Role</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2022-02-17T06:25:08Z"</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">developer</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">64839"</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">9eae4036-0858-4c09-8c06-7532d74ca1aa</span>
+<span class="na">rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">apiGroups</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">"</span>
+  <span class="na">resources</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">pods</span>
+  <span class="na">verbs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">create</span>
+  <span class="pi">-</span> <span class="s">get</span>
+  <span class="pi">-</span> <span class="s">list</span>
+  <span class="pi">-</span> <span class="s">update</span>
+  <span class="pi">-</span> <span class="s">delete</span>
+
+</code></pre></div></div>
+<p>How can we give access to deployments for this developer? We just need to add additional resource of deployments.</p>
+
+<p>Let us edit the <code class="language-plaintext highlighter-rouge">developer</code> role.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl edit role developer
+role.rbac.authorization.k8s.io/developer edited
+</code></pre></div></div>
+<p>Describe the role after editing it, just to confirm we have additional access to deployments.
+We have modified few Verbs as well (removed some access!)</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe role developer
+Name:         developer
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+PolicyRule:
+  Resources    Non-Resource URLs  Resource Names  Verbs
+  <span class="nt">---------</span>    <span class="nt">-----------------</span>  <span class="nt">--------------</span>  <span class="nt">-----</span>
+  deployments  <span class="o">[]</span>                 <span class="o">[]</span>              <span class="o">[</span>get list]
+  pods         <span class="o">[]</span>                 <span class="o">[]</span>              <span class="o">[</span>get list]
+</code></pre></div></div>
+<p>This is modified YAML version of the <code class="language-plaintext highlighter-rouge">developer</code> role.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ kubectl get role developer -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Role</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2022-02-17T06:25:08Z"</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">developer</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">66960"</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">9eae4036-0858-4c09-8c06-7532d74ca1aa</span>
+<span class="na">rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">apiGroups</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">"</span>
+  <span class="na">resources</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">deployments</span>
+  <span class="pi">-</span> <span class="s">pods</span>
+  <span class="na">verbs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">get</span>
+  <span class="pi">-</span> <span class="s">list</span>
+</code></pre></div></div>
+<p>Now switch back to the <code class="language-plaintext highlighter-rouge">pradeep</code> context and verify if you can get the nodes.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config use-context pradeep
+Switched to context <span class="s2">"pradeep"</span><span class="nb">.</span>
+</code></pre></div></div>
+<p>Let us see if <code class="language-plaintext highlighter-rouge">pradeep</code> can get deployments.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployments
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: deployments.apps is forbidden: User <span class="s2">"pradeep"</span> cannot list resource <span class="s2">"deployments"</span> <span class="k">in </span>API group <span class="s2">"apps"</span> <span class="k">in </span>the namespace <span class="s2">"default"</span>
+</code></pre></div></div>
+<p>Still Forbidden.  It is do with the <code class="language-plaintext highlighter-rouge">apiGroups</code> settings. Currently we did not specify anything, it was left blank.</p>
+
+<p>We can edit again, change the <code class="language-plaintext highlighter-rouge">apiGroups</code> to any with the <code class="language-plaintext highlighter-rouge">*</code>. Though in production environment, we might want to be more specific and only configured limited groups as needed.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config use-context k8s
+Switched to context <span class="s2">"k8s"</span><span class="nb">.</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl edit role developer
+role.rbac.authorization.k8s.io/developer edited
+</code></pre></div></div>
+<p>Look at the <code class="language-plaintext highlighter-rouge">apiGroups</code> value of <code class="language-plaintext highlighter-rouge">*</code>.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ kubectl get role developer -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Role</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2022-02-17T06:25:08Z"</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">developer</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">67224"</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">9eae4036-0858-4c09-8c06-7532d74ca1aa</span>
+<span class="na">rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">apiGroups</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s1">'</span><span class="s">*'</span>
+  <span class="na">resources</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">deployments</span>
+  <span class="pi">-</span> <span class="s">pods</span>
+  <span class="na">verbs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">get</span>
+  <span class="pi">-</span> <span class="s">list</span>
+</code></pre></div></div>
+<p>To test if this is working or not for <code class="language-plaintext highlighter-rouge">pradeep</code> user, there is another away, without switching context. We can make use of the <code class="language-plaintext highlighter-rouge">--as</code> option (impersonation).</p>
+
+<p>Before modifying the <code class="language-plaintext highlighter-rouge">apiGroup</code> setting, it was like this, for the same test.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployment <span class="nt">--as</span> pradeep
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: deployments.apps is forbidden: User <span class="s2">"pradeep"</span> cannot list resource <span class="s2">"deployments"</span> <span class="k">in </span>API group <span class="s2">"apps"</span> <span class="k">in </span>the namespace <span class="s2">"default"</span>
+</code></pre></div></div>
+<p>Now that we modified,</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployment <span class="nt">--as</span> pradeep
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+kodekloud   4/4     4            4           2d
+</code></pre></div></div>
+<p>Though this test confirms that <code class="language-plaintext highlighter-rouge">pradeep</code> can get the deployments, let us switch context and verify one more time.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl config use-context pradeep
+Switched to context <span class="s2">"pradeep"</span><span class="nb">.</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployments
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+kodekloud   4/4     4            4           2d
+</code></pre></div></div>
+<p>Congratulations!</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-02-17T10:55:04+05:30">February 17, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Roles+and+RoleBindings%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F17%2Fkubernetes-roles-rolebindings.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F17%2Fkubernetes-roles-rolebindings.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F17%2Fkubernetes-roles-rolebindings.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/02/17/kubernetes-kube-config.html" class="pagination--pager" title="Kubernetes Kube Config
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/02/19/kubernetes-security-context.html" class="pagination--pager" title="Kubernetes Security Contexts
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

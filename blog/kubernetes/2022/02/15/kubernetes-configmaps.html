@@ -1,0 +1,973 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Config Maps - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes ConfigMaps">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Config Maps">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/02/15/kubernetes-configmaps.html">
+
+
+  <meta property="og:description" content="Kubernetes ConfigMaps">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-15T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/15/kubernetes-configmaps.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Config Maps">
+    <meta itemprop="description" content="Kubernetes ConfigMaps">
+    <meta itemprop="datePublished" content="2022-02-15T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/15/kubernetes-configmaps.html" class="u-url" itemprop="url">Kubernetes Config Maps
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-02-15T10:55:04+05:30">February 15, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h1 id="kubernetes-configmaps">Kubernetes ConfigMaps</h1>
+
+<h3 id="configmaps">ConfigMaps</h3>
+
+<p>As seen in the explanation, ConfigMaps hold the configuration data for pods to consume. For example, we could store the color of the Webapp from the previous example, in the form of a ConfigMap.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl explain configmaps
+KIND:     ConfigMap
+VERSION:  v1
+
+DESCRIPTION:
+     ConfigMap holds configuration data <span class="k">for </span>pods to consume.
+</code></pre></div></div>
+<p>Before we create any configmaps, let us verify if we have any configmaps already in our cluster.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get configmaps
+NAME               DATA   AGE
+kube-root-ca.crt   1      7h16m
+</code></pre></div></div>
+<p>There is one configmap named <code class="language-plaintext highlighter-rouge">kube-root-ca.crt</code> already present with one DATA.
+To see what is stored in this configmap, we can describe it and look at the Annotations.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe configmaps
+Name:         kube-root-ca.crt
+Namespace:    default
+Labels:       &lt;none&gt;
+Annotations:  kubernetes.io/description:
+                Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints such as the internal service IP or kubern...
+
+Data
+<span class="o">====</span>
+ca.crt:
+<span class="nt">----</span>
+<span class="nt">-----BEGIN</span> CERTIFICATE-----
+MIIDBjCCAe6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p
+a3ViZUNBMB4XDTIxMDYyODA0NTM1NloXDTMxMDYyNzA0NTM1NlowFTETMBEGA1UE
+AxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKZu
+VYaX2I0BbQ7le2fCQiYL0UaoadaYm0UtRoYHCkGovRH4MBJlJipYp7IVZ+4oOgqZ
+VtBC2o9oRzXnWEM6pJyTsrMrEhtDyTxAeCLY5iVwkLRCxrqxvsCVeGsTaF+0SMCy
+PUXFaC20jrDVAxAUXs26Le0Fl2BjOv9k9K2hEScRuC0ogkF/oL+aC3BoGpdFmPVG
+S+R18kS1UyBGpUWkktyXhtEAmZVdHn+PGeMW2W3cuHyF4OEqQiXE5xcXt6TQG64F
+qgmE5xISVDp1/6VjlJeiVMqlyqZVm7dEKdtwcx6p8UKqnr7nL14STkzv6pDywk5v
+egCFa7sP+amk41K6VMECAwEAAaNhMF8wDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW
+MBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW
+BBSL+jGni3bexvU9wL8lBR0FeLmCQDANBgkqhkiG9w0BAQsFAAOCAQEAd/sJdAwa
+6hOYM52vQj0CiYfNqFAs1rK7klxzpPVa07sYIO8n8FjyzGTead+FxzeuxnOBxibu
+y/447esB/RPE3d7hv+piQqT9FD7H/lskpHyIvffz4ai15P3DFtKQeY464bxVnynQ
+eK4dvzySrqxDs5Q5mMC1PQn9ap7VvIRnz1wEr6hlHMqJ31G58rmnZ5V+eJBBUYvG
+a39/4Q1PIMyk98T6QmJDTuLQngD8QJagcRMm4D2mzdieomt9jmIsrd5jINMhsC6d
+pL/PMobEfOxGsZxSKW9RC4/mabcuo+Dty+xAN/cYlOrq6zGSatvQXu/60iDSx8un
+<span class="nv">D9XARLPvbRrYnA</span><span class="o">==</span>
+<span class="nt">-----END</span> CERTIFICATE-----
+
+
+BinaryData
+<span class="o">====</span>
+
+Events:  &lt;none&gt;
+</code></pre></div></div>
+
+<p>We can create configmaps in multiple different ways. Let us use the help option to see some examples.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl  create configmap <span class="nt">-h</span>
+Create a config map based on a file, directory, or specified literal value.
+
+ A single config map may package one or more key/value pairs.
+
+ When creating a config map based on a file, the key will default to the <span class="nb">basename </span>of the file, and the value will
+default to the file content.  If the <span class="nb">basename </span>is an invalid key, you may specify an alternate key.
+
+ When creating a config map based on a directory, each file whose <span class="nb">basename </span>is a valid key <span class="k">in </span>the directory will be
+packaged into the config map.  Any directory entries except regular files are ignored <span class="o">(</span>e.g. subdirectories, symlinks,
+devices, pipes, etc<span class="o">)</span><span class="nb">.</span>
+
+Aliases:
+configmap, cm
+
+Examples:
+  <span class="c"># Create a new config map named my-config based on folder bar</span>
+  kubectl create configmap my-config <span class="nt">--from-file</span><span class="o">=</span>path/to/bar
+
+  <span class="c"># Create a new config map named my-config with specified keys instead of file basenames on disk</span>
+  kubectl create configmap my-config <span class="nt">--from-file</span><span class="o">=</span><span class="nv">key1</span><span class="o">=</span>/path/to/bar/file1.txt <span class="nt">--from-file</span><span class="o">=</span><span class="nv">key2</span><span class="o">=</span>/path/to/bar/file2.txt
+
+  <span class="c"># Create a new config map named my-config with key1=config1 and key2=config2</span>
+  kubectl create configmap my-config <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">key1</span><span class="o">=</span>config1 <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">key2</span><span class="o">=</span>config2
+
+  <span class="c"># Create a new config map named my-config from the key=value pairs in the file</span>
+  kubectl create configmap my-config <span class="nt">--from-file</span><span class="o">=</span>path/to/bar
+
+  <span class="c"># Create a new config map named my-config from an env file</span>
+  kubectl create configmap my-config <span class="nt">--from-env-file</span><span class="o">=</span>path/to/foo.env <span class="nt">--from-env-file</span><span class="o">=</span>path/to/bar.env
+  &lt;SNIP&gt;
+</code></pre></div></div>
+<p>Using this examples, let us create a configmap named <code class="language-plaintext highlighter-rouge">webapp-color</code> using <code class="language-plaintext highlighter-rouge">--from-literal</code> option to set the color to <code class="language-plaintext highlighter-rouge">green</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create configmap webapp-color <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">APP_COLOR</span><span class="o">=</span>green
+configmap/webapp-color created
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get cm
+NAME               DATA   AGE
+kube-root-ca.crt   1      7h26m
+webapp-color       1      5s
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe cm webapp-color
+Name:         webapp-color
+Namespace:    default
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+
+Data
+<span class="o">====</span>
+APP_COLOR:
+<span class="nt">----</span>
+green
+
+BinaryData
+<span class="o">====</span>
+
+Events:  &lt;none&gt;
+</code></pre></div></div>
+<p>To use this configmap in a Pod definition, we need to make use of <code class="language-plaintext highlighter-rouge">-envFrom</code> and <code class="language-plaintext highlighter-rouge">-configMapRef</code> options in the Pod Spec.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pod-config-map.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">kodekloud-cm</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">kodekloud-cm</span>
+      <span class="na">image</span><span class="pi">:</span> <span class="s">kodekloud/webapp-color:v3</span>
+      <span class="na">envFrom</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">configMapRef</span><span class="pi">:</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">webapp-color</span>
+  <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pod-config-map.yaml
+pod/kodekloud-cm created
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide | <span class="nb">grep </span>cm
+kodekloud-cm                1/1     Running            0                106s    10.244.0.14   k8s       &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>Verify that app color is changed to <code class="language-plaintext highlighter-rouge">green</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ curl 10.244.0.14:8080
+&lt;!doctype html&gt;
+&lt;title&gt;Hello from Flask&lt;/title&gt;
+&lt;body style="background: #16a085;"&gt;&lt;/body&gt;
+&lt;div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"&gt;
+
+  &lt;h1&gt;Hello from kodekloud-cm!&lt;/h1&gt;
+
+
+
+  &lt;h2&gt;
+    Application Version: v3
+  &lt;/h2&gt;
+
+
+&lt;/div&gt;$ curl 10.244.0.14:8080/color
+green$
+$ exit
+logout
+</span></code></pre></div></div>
+<p>If we describe this pod, we can see the following section.
+<em>Environment Variables from:
+      webapp-color  ConfigMap  Optional: false</em></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pod kodekloud-cm
+Name:         kodekloud-cm
+Namespace:    default
+Priority:     0
+Node:         k8s/192.168.177.29
+Start Time:   Tue, 15 Feb 2022 20:09:51 +0530
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+Status:       Running
+IP:           10.244.0.14
+IPs:
+  IP:  10.244.0.14
+Containers:
+  kodekloud-cm:
+    Container ID:   docker://53b0a746b4c95c65bbdce09f416ca6762ec9ce78d2a9618187a86d80465ec349
+    Image:          kodekloud/webapp-color:v3
+    Image ID:       docker-pullable://kodekloud/webapp-color@sha256:3ecd19b1b85db381a0b6f78272458c3c274ac2a38e878d65700393899adb3177
+    Port:           &lt;none&gt;
+    Host Port:      &lt;none&gt;
+    State:          Running
+      Started:      Tue, 15 Feb 2022 20:09:53 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment Variables from:
+      webapp-color  ConfigMap  Optional: <span class="nb">false
+    </span>Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-sq9q4 <span class="o">(</span>ro<span class="o">)</span>
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  kube-api-access-sq9q4:
+    Type:                    Projected <span class="o">(</span>a volume that contains injected data from multiple sources<span class="o">)</span>
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       &lt;nil&gt;
+    DownwardAPI:             <span class="nb">true
+</span>QoS Class:                   BestEffort
+Node-Selectors:              &lt;none&gt;
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+                             node.kubernetes.io/unreachable:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+Events:
+  Type     Reason        Age               From               Message
+  <span class="nt">----</span>     <span class="nt">------</span>        <span class="nt">----</span>              <span class="nt">----</span>               <span class="nt">-------</span>
+  Normal   Scheduled     10h               default-scheduler  Successfully assigned default/kodekloud-cm to k8s
+  Normal   Pulled        10h               kubelet            Container image <span class="s2">"kodekloud/webapp-color:v3"</span> already present on machine
+  Normal   Created       10h               kubelet            Created container kodekloud-cm
+  Normal   Started       10h               kubelet            Started container kodekloud-cm
+  Warning  NodeNotReady  9h <span class="o">(</span>x2 over 10h<span class="o">)</span>  node-controller    Node is not ready
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-02-15T10:55:04+05:30">February 15, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Config+Maps%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F15%2Fkubernetes-configmaps.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F15%2Fkubernetes-configmaps.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F15%2Fkubernetes-configmaps.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/02/15/kubernetes-commands-arguments.html" class="pagination--pager" title="Passing Commands and Arguments to Kubernetes Resources
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/02/15/kubernetes-environment-variables.html" class="pagination--pager" title="Kubernetes Environment Variables
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

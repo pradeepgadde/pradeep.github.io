@@ -1,0 +1,1009 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Init Containers - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes Init Containers">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Init Containers">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/02/16/kubernetes-init-containers.html">
+
+
+  <meta property="og:description" content="Kubernetes Init Containers">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-16T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/16/kubernetes-init-containers.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Init Containers">
+    <meta itemprop="description" content="Kubernetes Init Containers">
+    <meta itemprop="datePublished" content="2022-02-16T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/16/kubernetes-init-containers.html" class="u-url" itemprop="url">Kubernetes Init Containers
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-02-16T10:55:04+05:30">February 16, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          5 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h1 id="kubernetes-init-containers">Kubernetes Init Containers</h1>
+
+<h3 id="init-containers">Init Containers</h3>
+
+<p>Earlier, we saw that a Pod can have multiple containers running apps within it, but it can also have one or more init containers, which are run before the app containers are started.</p>
+
+<p>Init containers are exactly like regular containers, except:
+Init containers always run to completion.
+Each init container must complete successfully before the next one starts.</p>
+
+<p>If init container fails during startup of that Pod, Kubernetes treats the overall Pod as failed.</p>
+
+<p>Here is an example with one InitContainer called <code class="language-plaintext highlighter-rouge">wait-for-service</code> which is basically looking for the presence of a service called <code class="language-plaintext highlighter-rouge">my-service</code>. It does this check by performing <code class="language-plaintext highlighter-rouge">nslookup</code>. Till the kebernetes service called <code class="language-plaintext highlighter-rouge">my-service</code> is present, the name resolution will not succeed and this initContainer will not be finishing. Once the service is created, the initContainer job is done and it proceeds to the main container, in this example, it is the <code class="language-plaintext highlighter-rouge">ubuntu</code> container.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ more pod-with-init-container.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">pod-with-init-container</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ubuntu</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">ubuntu</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">sh'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">-c'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">echo</span><span class="nv"> </span><span class="s">The</span><span class="nv"> </span><span class="s">ubuntu</span><span class="nv"> </span><span class="s">container</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">running!</span><span class="nv"> </span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">sleep</span><span class="nv"> </span><span class="s">3600'</span><span class="pi">]</span>
+  <span class="na">initContainers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">wait-for-service</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">busybox:1.28</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">sh'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">-c'</span><span class="pi">,</span> <span class="s2">"</span><span class="s">until</span><span class="nv"> </span><span class="s">nslookup</span><span class="nv"> </span><span class="s">myservice.$(cat</span><span class="nv"> </span><span class="s">/var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local;</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">echo</span><span class="nv"> </span><span class="s">waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">myservice;</span><span class="nv"> </span><span class="s">sleep</span><span class="nv"> </span><span class="s">2;</span><span class="nv"> </span><span class="s">done"</span><span class="pi">]</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pod-with-init-container.yaml
+pod/pod-with-init-container created
+</code></pre></div></div>
+<p>Once we created the pod with initContainer, we can see the state as <code class="language-plaintext highlighter-rouge">Init:0/1</code> meaning there is one init container but it is not yet ready.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide | <span class="nb">grep </span>init
+pod-with-init-container     0/1     Init:0/1           0              7s    &lt;none&gt;        k8s       &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>Waited for some more time, still it is in <code class="language-plaintext highlighter-rouge">Init:0/1</code> state.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide | <span class="nb">grep </span>init
+pod-with-init-container     0/1     Init:0/1           0                96s   10.244.0.15   k8s       &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>Let us describe this pod to get additional details.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pods pod-with-init-container
+Name:         pod-with-init-container
+Namespace:    default
+Priority:     0
+Node:         k8s/192.168.177.29
+Start Time:   Wed, 16 Feb 2022 07:48:13 +0530
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+Status:       Pending
+IP:
+IPs:          &lt;none&gt;
+Init Containers:
+  wait-for-service:
+    Container ID:
+    Image:         busybox:1.28
+    Image ID:
+    Port:          &lt;none&gt;
+    Host Port:     &lt;none&gt;
+    Command:
+      sh
+      <span class="nt">-c</span>
+      <span class="k">until </span>nslookup myservice.<span class="si">$(</span><span class="nb">cat</span> /var/run/secrets/kubernetes.io/serviceaccount/namespace<span class="si">)</span>.svc.cluster.local<span class="p">;</span> <span class="k">do </span><span class="nb">echo </span>waiting <span class="k">for </span>myservice<span class="p">;</span> <span class="nb">sleep </span>2<span class="p">;</span> <span class="k">done
+    </span>State:          Waiting
+      Reason:       PodInitializing
+    Ready:          False
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+apiVersion: v1
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7gp7r <span class="o">(</span>ro<span class="o">)</span>
+Containers:
+  ubuntu:
+    Container ID:
+    Image:         ubuntu
+    Image ID:
+    Port:          &lt;none&gt;
+    Host Port:     &lt;none&gt;
+    Command:
+      sh
+      <span class="nt">-c</span>
+      <span class="nb">echo </span>The ubuntu container is running! <span class="o">&amp;&amp;</span> <span class="nb">sleep </span>3600
+    State:          Waiting
+      Reason:       PodInitializing
+    Ready:          False
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7gp7r <span class="o">(</span>ro<span class="o">)</span>
+Conditions:
+  Type              Status
+  Initialized       False
+  Ready             False
+  ContainersReady   False
+  PodScheduled      True
+Volumes:
+  kube-api-access-7gp7r:
+    Type:                    Projected <span class="o">(</span>a volume that contains injected data from multiple sources<span class="o">)</span>
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       &lt;nil&gt;
+    DownwardAPI:             <span class="nb">true
+</span>QoS Class:                   BestEffort
+Node-Selectors:              &lt;none&gt;
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+                             node.kubernetes.io/unreachable:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+Events:
+  Type    Reason     Age   From               Message
+  <span class="nt">----</span>    <span class="nt">------</span>     <span class="nt">----</span>  <span class="nt">----</span>               <span class="nt">-------</span>
+  Normal  Scheduled  17s   default-scheduler  Successfully assigned default/pod-with-init-container to k8s
+  Normal  Pulling    14s   kubelet            Pulling image <span class="s2">"busybox:1.28"</span>
+</code></pre></div></div>
+<p>As seen above,  Init Container is in Waiting state and overall Pod status is Pending.</p>
+
+<p>To make the InitiContainer successful, let us create a service called <code class="language-plaintext highlighter-rouge">myservice</code>.
+Here is the sample definition of the service.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat init-container-service.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">myservice</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+    <span class="na">port</span><span class="pi">:</span> <span class="m">80</span>
+    <span class="na">targetPort</span><span class="pi">:</span> <span class="m">9376</span>
+</code></pre></div></div>
+<p>Create the myservice from the YAML file.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> init-container-service.yaml
+service/myservice created
+</code></pre></div></div>
+<p>Once the service is created, verify if there is any change in the main Pod status. It seems there is a change.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide | <span class="nb">grep </span>init
+pod-with-init-container     0/1     PodInitializing    0                108s   10.244.0.15   k8s       &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>It is not yet in running state, it might take some more time. In the meanwhile, let us inspect the logs of the InitContainer that we created <code class="language-plaintext highlighter-rouge">wait-for-service</code>.</p>
+
+<p>Remember the <code class="language-plaintext highlighter-rouge">kubectl logs</code> command?! and the <code class="language-plaintext highlighter-rouge">-c</code> option to specify a container name when there are multiple containers in a pod!</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl logs pod-with-init-container <span class="nt">-c</span> wait-for-service
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+nslookup: can<span class="s1">'t resolve '</span>myservice.default.svc.cluster.local<span class="s1">'
+waiting for myservice
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+waiting for myservice
+nslookup: can'</span>t resolve <span class="s1">'myservice.default.svc.cluster.local'</span>
+Server:    10.96.0.10
+nslookup: can<span class="s1">'t resolve '</span>myservice.default.svc.cluster.local<span class="s1">'
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+&lt;SNIP&gt;
+
+nslookup: can'</span>t resolve <span class="s1">'myservice.default.svc.cluster.local'</span>
+waiting <span class="k">for </span>myservice
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      myservice.default.svc.cluster.local
+Address 1: 10.111.136.80 myservice.default.svc.cluster.local
+</code></pre></div></div>
+
+<p>A lot of similar output is omitted for brevity, but we can clearly see that this container is continuosly checking for the resolution of <code class="language-plaintext highlighter-rouge">myservice.default.svc.cluster.local</code> but nslookup: can’t resolve it.</p>
+
+<p>Finally, after we created the <code class="language-plaintext highlighter-rouge">myservice</code> Service, name resolution was successful ( the last line). It (<code class="language-plaintext highlighter-rouge">myservice.default.svc.cluster.local</code>) is resolved to the IP address of 10.111.136.80.</p>
+
+<p>This is nothing but the ClusterIP assigned to the <code class="language-plaintext highlighter-rouge">myservice</code>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>   AGE
+kubernetes   ClusterIP   10.96.0.1       &lt;none&gt;        443/TCP   19h
+myservice    ClusterIP   10.111.136.80   &lt;none&gt;        80/TCP    9m13s
+</code></pre></div></div>
+<p>Going back to the main Pod, we can see it is in Running State.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide | <span class="nb">grep </span>init
+pod-with-init-container     1/1     Running            0               12m   10.244.0.15   k8s       &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>If we describe it one more time, Init Container is in Terminated State with Reason as Completed. And the Ubuntu container is Running.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pods pod-with-init-container
+Name:         pod-with-init-container
+Namespace:    default
+Priority:     0
+Node:         k8s/192.168.177.29
+Start Time:   Wed, 16 Feb 2022 07:48:13 +0530
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+Status:       Running
+IP:           10.244.0.15
+IPs:
+  IP:  10.244.0.15
+Init Containers:
+  wait-for-service:
+    Container ID:  docker://8b5668914aeef2c9c43eebf3ebf7b7289eff4efa96166198fc0c6db8cdfd358b
+    Image:         busybox:1.28
+    Image ID:      docker-pullable://busybox@sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47
+    Port:          &lt;none&gt;
+    Host Port:     &lt;none&gt;
+    Command:
+      sh
+      <span class="nt">-c</span>
+      <span class="k">until </span>nslookup myservice.<span class="si">$(</span><span class="nb">cat</span> /var/run/secrets/kubernetes.io/serviceaccount/namespace<span class="si">)</span>.svc.cluster.local<span class="p">;</span> <span class="k">do </span><span class="nb">echo </span>waiting <span class="k">for </span>myservice<span class="p">;</span> <span class="nb">sleep </span>2<span class="p">;</span> <span class="k">done
+    </span>State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Wed, 16 Feb 2022 07:48:52 +0530
+      Finished:     Wed, 16 Feb 2022 07:49:52 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7gp7r <span class="o">(</span>ro<span class="o">)</span>
+Containers:
+  ubuntu:
+    Container ID:  docker://60caee7150e608901a2fda93fdc6758c8aa5208ec69320ed8c7982d57efde9fb
+    Image:         ubuntu
+    Image ID:      docker-pullable://ubuntu@sha256:669e010b58baf5beb2836b253c1fd5768333f0d1dbcb834f7c07a4dc93f474be
+    Port:          &lt;none&gt;
+    Host Port:     &lt;none&gt;
+    Command:
+      sh
+      <span class="nt">-c</span>
+      <span class="nb">echo </span>The ubuntu container is running! <span class="o">&amp;&amp;</span> <span class="nb">sleep </span>3600
+    State:          Running
+      Started:      Wed, 16 Feb 2022 07:59:33 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7gp7r <span class="o">(</span>ro<span class="o">)</span>
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  kube-api-access-7gp7r:
+    Type:                    Projected <span class="o">(</span>a volume that contains injected data from multiple sources<span class="o">)</span>
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       &lt;nil&gt;
+    DownwardAPI:             <span class="nb">true
+</span>QoS Class:                   BestEffort
+Node-Selectors:              &lt;none&gt;
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+                             node.kubernetes.io/unreachable:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+Events:
+  Type    Reason     Age   From               Message
+  <span class="nt">----</span>    <span class="nt">------</span>     <span class="nt">----</span>  <span class="nt">----</span>               <span class="nt">-------</span>
+  Normal  Scheduled  12m   default-scheduler  Successfully assigned default/pod-with-init-container to k8s
+  Normal  Pulling    12m   kubelet            Pulling image <span class="s2">"busybox:1.28"</span>
+  Normal  Pulled     11m   kubelet            Successfully pulled image <span class="s2">"busybox:1.28"</span> <span class="k">in </span>35.840326348s
+  Normal  Created    11m   kubelet            Created container wait-for-service
+  Normal  Started    11m   kubelet            Started container wait-for-service
+  Normal  Pulling    10m   kubelet            Pulling image <span class="s2">"ubuntu"</span>
+  Normal  Pulled     50s   kubelet            Successfully pulled image <span class="s2">"ubuntu"</span> <span class="k">in </span>9m39.673051136s
+  Normal  Created    50s   kubelet            Created container ubuntu
+  Normal  Started    50s   kubelet            Started container ubuntu
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-02-16T10:55:04+05:30">February 16, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Init+Containers%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F16%2Fkubernetes-init-containers.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F16%2Fkubernetes-init-containers.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F16%2Fkubernetes-init-containers.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/02/15/kubernetes-secrets.html" class="pagination--pager" title="Kubernetes Secrets
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/02/16/kubernetes-multi-container-pods.html" class="pagination--pager" title="Kubernetes Multi-container Pods
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

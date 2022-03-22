@@ -1,0 +1,1086 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Rolling Updates - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes Rolling Update">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Rolling Updates">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/02/11/kubernetes-rolling-update.html">
+
+
+  <meta property="og:description" content="Kubernetes Rolling Update">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-11T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/11/kubernetes-rolling-update.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Rolling Updates">
+    <meta itemprop="description" content="Kubernetes Rolling Update">
+    <meta itemprop="datePublished" content="2022-02-11T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/11/kubernetes-rolling-update.html" class="u-url" itemprop="url">Kubernetes Rolling Updates
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-02-11T10:55:04+05:30">February 11, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          6 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h1 id="kubernetes-rolling-update">Kubernetes Rolling Update</h1>
+
+<h2 id="application-life-cycle-management">Application Life Cycle Management</h2>
+
+<p>I ran into some issue with my cluster and had to rebuild from scratch. Here is how my new cluster looks like:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get nodes <span class="nt">-o</span> wide
+NAME      STATUS   ROLES                  AGE     VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE              KERNEL-VERSION   CONTAINER-RUNTIME
+k8s       Ready    control-plane,master   4m42s   v1.23.1   192.168.177.29   &lt;none&gt;        Buildroot 2021.02.4   4.19.202         docker://20.10.12
+k8s-m02   Ready    &lt;none&gt;                 4m21s   v1.23.1   192.168.177.30   &lt;none&gt;        Buildroot 2021.02.4   4.19.202         docker://20.10.12
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-A</span>
+NAMESPACE     NAME                          READY   STATUS    RESTARTS   AGE
+kube-system   coredns-64897985d-l9zmg       1/1     Running   0          4m34s
+kube-system   etcd-k8s                      1/1     Running   1          4m45s
+kube-system   kindnet-4d4xb                 1/1     Running   0          50s
+kube-system   kindnet-z27gn                 1/1     Running   0          4m30s
+kube-system   kube-apiserver-k8s            1/1     Running   1          4m45s
+kube-system   kube-controller-manager-k8s   1/1     Running   1          4m45s
+kube-system   kube-proxy-n75w8              1/1     Running   0          4m34s
+kube-system   kube-proxy-v2mq5              1/1     Running   0          4m30s
+kube-system   kube-scheduler-k8s            1/1     Running   1          4m45s
+kube-system   storage-provisioner           1/1     Running   0          4m43s
+
+</code></pre></div></div>
+<p>Let us now create a deployment called <code class="language-plaintext highlighter-rouge">kodekloud</code> with image <code class="language-plaintext highlighter-rouge">webapp-color</code> and four replicas.
+Here is the Docker image that we are going to use: https://hub.docker.com/r/kodekloud/webapp-color/tags?page=1&amp;ordering=-last_updated. It has many versions of the same image (like v1, v2, and v3).</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create deployment kodekloud <span class="nt">--image</span><span class="o">=</span>kodekloud/webapp-color <span class="nt">--replicas</span><span class="o">=</span>4
+deployment.apps/kodekloud created
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE      NOMINATED NODE   READINESS GATES
+kodekloud-589c9f4b47-6fbqg   1/1     Running   0          47s   10.244.1.8   k8s-m02   &lt;none&gt;           &lt;none&gt;
+kodekloud-589c9f4b47-c75mz   1/1     Running   0          47s   10.244.1.7   k8s-m02   &lt;none&gt;           &lt;none&gt;
+kodekloud-589c9f4b47-s54tz   1/1     Running   0          47s   10.244.0.7   k8s       &lt;none&gt;           &lt;none&gt;
+kodekloud-589c9f4b47-z2sqs   1/1     Running   0          47s   10.244.0.6   k8s       &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployment
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+kodekloud   4/4     4            4           53s
+</code></pre></div></div>
+<p>Verify the current Image being used by the deployment</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe deployment kodekloud | <span class="nb">grep </span>Image
+    Image:        kodekloud/webapp-color
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ curl 10.244.1.8:8080
+&lt;!doctype html&gt;
+&lt;title&gt;Hello from Flask&lt;/title&gt;
+&lt;body style="background: #16a085;"&gt;&lt;/body&gt;
+&lt;div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"&gt;
+
+  &lt;h1&gt;Hello from kodekloud-589c9f4b47-6fbqg!&lt;/h1&gt;
+
+
+
+
+
+&lt;/div&gt;$ curl 10.244.1.7:8080
+&lt;!doctype html&gt;
+&lt;title&gt;Hello from Flask&lt;/title&gt;
+&lt;body style="background: #16a085;"&gt;&lt;/body&gt;
+&lt;div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"&gt;
+
+  &lt;h1&gt;Hello from kodekloud-589c9f4b47-c75mz!&lt;/h1&gt;
+
+
+
+
+&lt;/div&gt;$ curl 10.244.0.7:8080
+&lt;!doctype html&gt;
+&lt;title&gt;Hello from Flask&lt;/title&gt;
+&lt;body style="background: #2980b9;"&gt;&lt;/body&gt;
+&lt;div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"&gt;
+
+  &lt;h1&gt;Hello from kodekloud-589c9f4b47-s54tz!&lt;/h1&gt;
+
+
+
+
+&lt;/div&gt;$ curl 10.244.0.6:8080
+&lt;!doctype html&gt;
+&lt;title&gt;Hello from Flask&lt;/title&gt;
+&lt;body style="background: #be2edd;"&gt;&lt;/body&gt;
+&lt;div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"&gt;
+
+  &lt;h1&gt;Hello from kodekloud-589c9f4b47-z2sqs!&lt;/h1&gt;
+
+
+
+
+&lt;/div&gt;$
+</span></code></pre></div></div>
+
+<h3 id="rolling-update">Rolling Update</h3>
+<p>Also, find out the strategy used by this deployment</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe deployment kodekloud | <span class="nb">grep </span>Strategy
+StrategyType:           RollingUpdate
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+</code></pre></div></div>
+<p>With <code class="language-plaintext highlighter-rouge">RollingUpdate</code> strategy, Pods are upgraded few at a time.</p>
+
+<p>Now update the deployment to use a different version of the application <code class="language-plaintext highlighter-rouge">kodekloud/webapp-color:v2</code>.</p>
+
+<p>For this, we need not delete or re-create the existing deployment. We can <strong>edit</strong> the deployment and modify the image name. Save with Esc + wq.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl edit deployments kodekloud
+</code></pre></div></div>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Please edit the object below. Lines beginning with a '#' will be ignored,</span>
+<span class="c1"># and an empty file will abort the edit. If an error occurs while saving this file will be</span>
+<span class="c1"># reopened with the relevant failures.</span>
+<span class="c1">#</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="na">deployment.kubernetes.io/revision</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1"</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2022-02-15T07:13:38Z"</span>
+  <span class="na">generation</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">kodekloud</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">kodekloud</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1592"</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">e5728c54-8768-4d5c-b1b0-c3e33cf62062</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">progressDeadlineSeconds</span><span class="pi">:</span> <span class="m">600</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">4</span>
+  <span class="na">revisionHistoryLimit</span><span class="pi">:</span> <span class="m">10</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">kodekloud</span>
+  <span class="na">strategy</span><span class="pi">:</span>
+    <span class="na">rollingUpdate</span><span class="pi">:</span>
+      <span class="na">maxSurge</span><span class="pi">:</span> <span class="s">25%</span>
+      <span class="na">maxUnavailable</span><span class="pi">:</span> <span class="s">25%</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">RollingUpdate</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">kodekloud</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">kodekloud/webapp-color:v2</span>
+        <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">webapp-color</span>
+        <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+        <span class="na">terminationMessagePath</span><span class="pi">:</span> <span class="s">/dev/termination-log</span>
+        <span class="na">terminationMessagePolicy</span><span class="pi">:</span> <span class="s">File</span>
+      <span class="na">dnsPolicy</span><span class="pi">:</span> <span class="s">ClusterFirst</span>
+      <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+      <span class="na">schedulerName</span><span class="pi">:</span> <span class="s">default-scheduler</span>
+<span class="s">-- INSERT --</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl edit deployments kodekloud
+deployment.apps/kodekloud edited
+</code></pre></div></div>
+
+<p>The pods should be recreated with new image. Looking at the AGE column, we can conclude that all four pods got re-created few seconds ago. If you notice carefully, the replicates is having a different Identifier now (changed from 589c9f4b47 to 8477b7849).</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+kodekloud-8477b7849-4lgg2   1/1     Running   0          66s
+kodekloud-8477b7849-b7grh   1/1     Running   0          44s
+kodekloud-8477b7849-ndf4w   1/1     Running   0          66s
+kodekloud-8477b7849-ww5qn   1/1     Running   0          47s
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get deployments.apps
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+kodekloud   4/4     4            4           16m
+</code></pre></div></div>
+<p>If we look at the Events section of this deployment, we can clearly see that the deployment-controller has Scaled Up the new replica set kodekloud-8477b7849 gradually from 1 to 4 and at the same time, old replica set kodekloud-589c9f4b47 got Scaled down from 4 to 0. This is becuase of the <code class="language-plaintext highlighter-rouge">RollingUpdateStrategy:  25% max unavailable, 25% max surge</code>.
+For this current strategy, only one Pod can be down during the upgrade process (25%, meaning 1 out of total 4 pods in the deployment).</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe deployments.apps kodekloud
+Name:                   kodekloud
+Namespace:              default
+CreationTimestamp:      Tue, 15 Feb 2022 12:43:38 +0530
+Labels:                 <span class="nv">app</span><span class="o">=</span>kodekloud
+Annotations:            deployment.kubernetes.io/revision: 2
+Selector:               <span class="nv">app</span><span class="o">=</span>kodekloud
+Replicas:               4 desired | 4 updated | 4 total | 4 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  <span class="nv">app</span><span class="o">=</span>kodekloud
+  Containers:
+   webapp-color:
+    Image:        kodekloud/webapp-color:v2
+    Port:         &lt;none&gt;
+    Host Port:    &lt;none&gt;
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Conditions:
+  Type           Status  Reason
+  <span class="nt">----</span>           <span class="nt">------</span>  <span class="nt">------</span>
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  &lt;none&gt;
+NewReplicaSet:   kodekloud-8477b7849 <span class="o">(</span>4/4 replicas created<span class="o">)</span>
+Events:
+  Type    Reason             Age    From                   Message
+  <span class="nt">----</span>    <span class="nt">------</span>             <span class="nt">----</span>   <span class="nt">----</span>                   <span class="nt">-------</span>
+  Normal  ScalingReplicaSet  23m    deployment-controller  Scaled up replica <span class="nb">set </span>kodekloud-589c9f4b47 to 4
+  Normal  ScalingReplicaSet  8m22s  deployment-controller  Scaled up replica <span class="nb">set </span>kodekloud-8477b7849 to 1
+  Normal  ScalingReplicaSet  8m22s  deployment-controller  Scaled down replica <span class="nb">set </span>kodekloud-589c9f4b47 to 3
+  Normal  ScalingReplicaSet  8m22s  deployment-controller  Scaled up replica <span class="nb">set </span>kodekloud-8477b7849 to 2
+  Normal  ScalingReplicaSet  8m4s   deployment-controller  Scaled down replica <span class="nb">set </span>kodekloud-589c9f4b47 to 2
+  Normal  ScalingReplicaSet  8m3s   deployment-controller  Scaled up replica <span class="nb">set </span>kodekloud-8477b7849 to 3
+  Normal  ScalingReplicaSet  8m     deployment-controller  Scaled down replica <span class="nb">set </span>kodekloud-589c9f4b47 to 1
+  Normal  ScalingReplicaSet  8m     deployment-controller  Scaled up replica <span class="nb">set </span>kodekloud-8477b7849 to 4
+  Normal  ScalingReplicaSet  7m55s  deployment-controller  Scaled down replica <span class="nb">set </span>kodekloud-589c9f4b47 to 0
+</code></pre></div></div>
+<p>Verify the Image being used by the deployment now. It says, <code class="language-plaintext highlighter-rouge">v2</code>.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$kubectl</span> describe deployment kodekloud| <span class="nb">grep </span>Image
+    Image:        kodekloud/webapp-color:v2
+</code></pre></div></div>
+<p>Let’s collect the new IP address of the Pods and verify the application from the minikube node.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide
+NAME                        READY   STATUS    RESTARTS   AGE     IP            NODE      NOMINATED NODE   READINESS GATES
+kodekloud-8477b7849-4lgg2   1/1     Running   0          4m2s    10.244.0.8    k8s       &lt;none&gt;           &lt;none&gt;
+kodekloud-8477b7849-b7grh   1/1     Running   0          3m40s   10.244.0.9    k8s       &lt;none&gt;           &lt;none&gt;
+kodekloud-8477b7849-ndf4w   1/1     Running   0          4m2s    10.244.1.9    k8s-m02   &lt;none&gt;           &lt;none&gt;
+kodekloud-8477b7849-ww5qn   1/1     Running   0          3m43s   10.244.1.10   k8s-m02   &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>As seen here, the application is now running the v2 version as indicated by the new headers:</p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;h2&gt;</span>
+    Application Version: v2
+<span class="nt">&lt;/h2&gt;</span>
+</code></pre></div></div>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s$ minikube ssh -p k8s
+                         _             _
+            _         _ ( )           ( )
+  ___ ___  (_)  ___  (_)| |/')  _   _ | |_      __
+/' _ ` _ `\| |/' _ `\| || , <span class="nt">&lt;</span>  <span class="err">(</span> <span class="err">)</span> <span class="err">(</span> <span class="err">)|</span> <span class="err">'</span><span class="na">_</span><span class="err">`\</span>  <span class="err">/'</span><span class="na">__</span><span class="err">`\</span>
+<span class="err">|</span> <span class="err">(</span> <span class="err">)</span> <span class="err">(</span> <span class="err">)</span> <span class="err">||</span> <span class="err">||</span> <span class="err">(</span> <span class="err">)</span> <span class="err">||</span> <span class="err">||</span> <span class="err">|\`\</span> <span class="err">|</span> <span class="err">(</span><span class="na">_</span><span class="err">)</span> <span class="err">||</span> <span class="err">|</span><span class="na">_</span><span class="err">)</span> <span class="err">)(</span>  <span class="na">___</span><span class="err">/</span>
+<span class="err">(</span><span class="na">_</span><span class="err">)</span> <span class="err">(</span><span class="na">_</span><span class="err">)</span> <span class="err">(</span><span class="na">_</span><span class="err">)(</span><span class="na">_</span><span class="err">)(</span><span class="na">_</span><span class="err">)</span> <span class="err">(</span><span class="na">_</span><span class="err">)(</span><span class="na">_</span><span class="err">)(</span><span class="na">_</span><span class="err">)</span> <span class="err">(</span><span class="na">_</span><span class="err">)`\</span><span class="na">___</span><span class="err">/'(</span><span class="na">_</span><span class="err">,</span><span class="na">__</span><span class="err">/'`\</span><span class="na">____</span><span class="err">)</span>
+
+<span class="err">$</span> <span class="na">curl</span> <span class="err">10.244.0.8</span><span class="na">:8080</span>
+<span class="err">&lt;!</span><span class="na">doctype</span> <span class="na">html</span><span class="nt">&gt;</span>
+<span class="nt">&lt;title&gt;</span>Hello from Flask<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;body</span> <span class="na">style=</span><span class="s">"background: #16a085;"</span><span class="nt">&gt;&lt;/body&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;h1&gt;</span>Hello from kodekloud-8477b7849-4lgg2!<span class="nt">&lt;/h1&gt;</span>
+
+
+
+  <span class="nt">&lt;h2&gt;</span>
+    Application Version: v2
+  <span class="nt">&lt;/h2&gt;</span>
+
+
+<span class="nt">&lt;/div&gt;</span>$ curl 10.244.0.9:8080
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;title&gt;</span>Hello from Flask<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;body</span> <span class="na">style=</span><span class="s">"background: #16a085;"</span><span class="nt">&gt;&lt;/body&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;h1&gt;</span>Hello from kodekloud-8477b7849-b7grh!<span class="nt">&lt;/h1&gt;</span>
+
+
+
+  <span class="nt">&lt;h2&gt;</span>
+    Application Version: v2
+  <span class="nt">&lt;/h2&gt;</span>
+
+
+<span class="nt">&lt;/div&gt;</span>$ curl 10.244.1.9:8080
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;title&gt;</span>Hello from Flask<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;body</span> <span class="na">style=</span><span class="s">"background: #16a085;"</span><span class="nt">&gt;&lt;/body&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;h1&gt;</span>Hello from kodekloud-8477b7849-ndf4w!<span class="nt">&lt;/h1&gt;</span>
+
+
+
+  <span class="nt">&lt;h2&gt;</span>
+    Application Version: v2
+  <span class="nt">&lt;/h2&gt;</span>
+
+
+<span class="nt">&lt;/div&gt;</span>$ curl 10.244.1.10:8080
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;title&gt;</span>Hello from Flask<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;body</span> <span class="na">style=</span><span class="s">"background: #16a085;"</span><span class="nt">&gt;&lt;/body&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;"</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;h1&gt;</span>Hello from kodekloud-8477b7849-ww5qn!<span class="nt">&lt;/h1&gt;</span>
+
+
+
+  <span class="nt">&lt;h2&gt;</span>
+    Application Version: v2
+  <span class="nt">&lt;/h2&gt;</span>
+
+
+<span class="nt">&lt;/div&gt;</span>$ 
+</code></pre></div></div>
+<p>Another test is to verify the color of the web-app, it says <code class="language-plaintext highlighter-rouge">green</code>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>curl 10.244.0.8:8080/color
+green<span class="nv">$ </span>curl 10.244.0.9:8080/color
+green<span class="nv">$ </span>curl 10.244.1.9:8080/color
+green<span class="nv">$ </span>curl 10.244.1.10:8080/color
+green<span class="err">$</span>
+</code></pre></div></div>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-02-11T10:55:04+05:30">February 11, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Rolling+Updates%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F11%2Fkubernetes-rolling-update.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F11%2Fkubernetes-rolling-update.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F11%2Fkubernetes-rolling-update.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/02/11/kubernetes-multiple-schedulers.html" class="pagination--pager" title="Kubernetes Multiple Schedulers
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/02/11/kubernetes-static-pods.html" class="pagination--pager" title="Kubernetes Static Pods
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

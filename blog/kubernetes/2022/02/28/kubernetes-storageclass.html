@@ -1,0 +1,1364 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Storage Class - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes StorageClass">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Storage Class">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/02/28/kubernetes-storageclass.html">
+
+
+  <meta property="og:description" content="Kubernetes StorageClass">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/kubernetes.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-28T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/28/kubernetes-storageclass.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Storage Class">
+    <meta itemprop="description" content="Kubernetes StorageClass">
+    <meta itemprop="datePublished" content="2022-02-28T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/02/28/kubernetes-storageclass.html" class="u-url" itemprop="url">Kubernetes Storage Class
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-02-28T10:55:04+05:30">February 28, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          12 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-cog"></i> Table of Contents</h4></header>
+              <ul class="toc__menu"><li><a href="#kubernetes-storageclass">Kubernetes StorageClass</a><ul><li><a href="#storageclass">StorageClass</a></li><li><a href="#static-binding">Static Binding</a></li><li><a href="#dynamic-binding">Dynamic Binding</a></li></ul></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="kubernetes-storageclass">Kubernetes StorageClass</h1>
+
+<h3 id="storageclass">StorageClass</h3>
+
+<p>In the previous example, we used a storageClass named <code class="language-plaintext highlighter-rouge">manual</code>, but that does not seem to be present.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get sc
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard <span class="o">(</span>default<span class="o">)</span>   k8s.io/minikube-hostpath   Delete          Immediate           <span class="nb">false                  </span>12d
+</code></pre></div></div>
+
+<p>There is a storage class by name standard, and is the default storage class.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe sc
+Name:            standard
+IsDefaultClass:  Yes
+Annotations:     kubectl.kubernetes.io/last-applied-configuration<span class="o">={</span><span class="s2">"apiVersion"</span>:<span class="s2">"storage.k8s.io/v1"</span>,<span class="s2">"kind"</span>:<span class="s2">"StorageClass"</span>,<span class="s2">"metadata"</span>:<span class="o">{</span><span class="s2">"annotations"</span>:<span class="o">{</span><span class="s2">"storageclass.kubernetes.io/is-default-class"</span>:<span class="s2">"true"</span><span class="o">}</span>,<span class="s2">"labels"</span>:<span class="o">{</span><span class="s2">"addonmanager.kubernetes.io/mode"</span>:<span class="s2">"EnsureExists"</span><span class="o">}</span>,<span class="s2">"name"</span>:<span class="s2">"standard"</span><span class="o">}</span>,<span class="s2">"provisioner"</span>:<span class="s2">"k8s.io/minikube-hostpath"</span><span class="o">}</span>
+,storageclass.kubernetes.io/is-default-class<span class="o">=</span><span class="nb">true
+</span>Provisioner:           k8s.io/minikube-hostpath
+Parameters:            &lt;none&gt;
+AllowVolumeExpansion:  &lt;<span class="nb">unset</span><span class="o">&gt;</span>
+MountOptions:          &lt;none&gt;
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                &lt;none&gt;
+</code></pre></div></div>
+<p>:memo: Changing the storage class name to <code class="language-plaintext highlighter-rouge">standard</code> also did not help solve the Forbidden issue with the <code class="language-plaintext highlighter-rouge">nginx</code>.</p>
+
+<p>Strangely, inside the Pod, we can access the <code class="language-plaintext highlighter-rouge">index.html</code> file with <code class="language-plaintext highlighter-rouge">cat</code> command, but <code class="language-plaintext highlighter-rouge">curl</code> is not working.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> my-pv-pod <span class="nt">--</span> /bin/bash
+root@my-pv-pod:/# <span class="nb">cat</span> /usr/share/nginx/html/indext.html
+Hello from Kubernetes storage
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl explain sc
+KIND:     StorageClass
+VERSION:  storage.k8s.io/v1
+
+DESCRIPTION:
+     StorageClass describes the parameters <span class="k">for </span>a class of storage <span class="k">for </span>which
+     PersistentVolumes can be dynamically provisioned.
+
+     StorageClasses are non-namespaced<span class="p">;</span> the name of the storage class according
+     to etcd is <span class="k">in </span>ObjectMeta.Name.
+
+FIELDS:
+   allowVolumeExpansion	&lt;boolean&gt;
+     AllowVolumeExpansion shows whether the storage class allow volume <span class="nb">expand
+
+   </span>allowedTopologies	&lt;<span class="o">[]</span>Object&gt;
+     Restrict the node topologies where volumes can be dynamically provisioned.
+     Each volume plugin defines its own supported topology specifications. An
+     empty TopologySelectorTerm list means there is no topology restriction.
+     This field is only honored by servers that <span class="nb">enable </span>the VolumeScheduling
+     feature.
+
+   apiVersion	&lt;string&gt;
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind	&lt;string&gt;
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata	&lt;Object&gt;
+     Standard object<span class="s1">'s metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   mountOptions	&lt;[]string&gt;
+     Dynamically provisioned PersistentVolumes of this storage class are created
+     with these mountOptions, e.g. ["ro", "soft"]. Not validated - mount of the
+     PVs will simply fail if one is invalid.
+
+   parameters	&lt;map[string]string&gt;
+     Parameters holds the parameters for the provisioner that should create
+     volumes of this storage class.
+
+   provisioner	&lt;string&gt; -required-
+     Provisioner indicates the type of the provisioner.
+
+   reclaimPolicy	&lt;string&gt;
+     Dynamically provisioned PersistentVolumes of this storage class are created
+     with this reclaimPolicy. Defaults to Delete.
+
+   volumeBindingMode	&lt;string&gt;
+     VolumeBindingMode indicates how PersistentVolumeClaims should be
+     provisioned and bound. When unset, VolumeBindingImmediate is used. This
+     field is only honored by servers that enable the VolumeScheduling feature.
+</span></code></pre></div></div>
+
+<h3 id="static-binding">Static Binding</h3>
+
+<p>Here is the PersistentVolume definition. If we omit the storageClassName, PVC is net getting bound. As you see, there is a default storageClass named <code class="language-plaintext highlighter-rouge">standard</code> and PVC is using it by default.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span><span class="nb">cat </span>pv.yaml
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 512m
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/config
+</code></pre></div></div>
+
+<p>Create the PV from the YAML file.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pv.yaml
+persistentvolume/pv created
+</code></pre></div></div>
+
+<p>Verify the available PVs. The newly created PV should be in <code class="language-plaintext highlighter-rouge">Available</code> state. Currently, there are no Claims for this volume.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pv
+NAME   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+pv     512m       RWX            Retain           Available           standard                8s
+</code></pre></div></div>
+<p>Describe the PV for addtional details.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pv pv
+Name:            pv
+Labels:          &lt;none&gt;
+Annotations:     &lt;none&gt;
+Finalizers:      <span class="o">[</span>kubernetes.io/pv-protection]
+StorageClass:    standard
+Status:          Available
+Claim:
+Reclaim Policy:  Retain
+Access Modes:    RWX
+VolumeMode:      Filesystem
+Capacity:        512m
+Node Affinity:   &lt;none&gt;
+Message:
+Source:
+    Type:          HostPath <span class="o">(</span>bare host directory volume<span class="o">)</span>
+    Path:          /data/config
+    HostPathType:
+Events:            &lt;none&gt;
+</code></pre></div></div>
+<p>Now, create a PVC with same <code class="language-plaintext highlighter-rouge">accessModes: ReadWriteMany</code>.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pvc.yaml</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">PersistentVolumeClaim</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">pvc</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">accessModes</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">ReadWriteMany</span>
+  <span class="na">resources</span><span class="pi">:</span>
+    <span class="na">requests</span><span class="pi">:</span>
+      <span class="na">storage</span><span class="pi">:</span> <span class="s">256m</span>
+</code></pre></div></div>
+<p>Create PVC from the YAML file.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pvc.yaml
+persistentvolumeclaim/pvc created
+</code></pre></div></div>
+<p>Verify the newly created PVC. It should be in <code class="language-plaintext highlighter-rouge">Bound</code> state. Note the <code class="language-plaintext highlighter-rouge">STORAGECLASS</code> column. It is using the default one named <code class="language-plaintext highlighter-rouge">standard</code>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pvc
+NAME   STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+pvc    Bound    pv       512m       RWX            standard       4s
+</code></pre></div></div>
+<p>Describe the PVC for addtional details.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pvc
+Name:          pvc
+Namespace:     default
+StorageClass:  standard
+Status:        Bound
+Volume:        pv
+Labels:        &lt;none&gt;
+Annotations:   pv.kubernetes.io/bind-completed: <span class="nb">yes
+               </span>pv.kubernetes.io/bound-by-controller: <span class="nb">yes
+</span>Finalizers:    <span class="o">[</span>kubernetes.io/pvc-protection]
+Capacity:      512m
+Access Modes:  RWX
+VolumeMode:    Filesystem
+Used By:       &lt;none&gt;
+Events:        &lt;none&gt;
+</code></pre></div></div>
+<p>Now, create a Pod that uses the newly defined PVC.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pod.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">app</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">app</span>
+    <span class="na">volumeMounts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/data/app/config"</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">configpvc</span>
+  <span class="na">volumes</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">configpvc</span>
+    <span class="na">persistentVolumeClaim</span><span class="pi">:</span>
+      <span class="na">claimName</span><span class="pi">:</span> <span class="s">pvc</span>
+  <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
+</code></pre></div></div>
+<p>Create the Pod from the YAML file.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pod.yaml
+pod/app created
+</code></pre></div></div>
+<p>Use the <code class="language-plaintext highlighter-rouge">-o wide</code> option to check the IP and NODE details.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods app <span class="nt">-o</span> wide
+NAME   READY   STATUS    RESTARTS   AGE   IP           NODE      NOMINATED NODE   READINESS GATES
+app    1/1     Running   0          18s   10.244.1.5   k8s-m02   &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>Describe the Pod and look for Volumes section.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pods app
+Name:         app
+Namespace:    default
+Priority:     0
+Node:         k8s-m02/192.168.177.30
+Start Time:   Mon, 28 Feb 2022 09:25:46 +0530
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+Status:       Running
+IP:           10.244.1.5
+IPs:
+  IP:  10.244.1.5
+Containers:
+  app:
+    Container ID:   docker://09871149e09a1da02a86a9e38ace82082def59aa38dffbf739e14f7694f0f79e
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:2834dc507516af02784808c5f48b7cbe38b8ed5d0f4837f16e78d00deb7e7767
+    Port:           &lt;none&gt;
+    Host Port:      &lt;none&gt;
+    State:          Running
+      Started:      Mon, 28 Feb 2022 09:25:50 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /data/app/config from configpvc <span class="o">(</span>rw<span class="o">)</span>
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-vfx8b <span class="o">(</span>ro<span class="o">)</span>
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  configpvc:
+    Type:       PersistentVolumeClaim <span class="o">(</span>a reference to a PersistentVolumeClaim <span class="k">in </span>the same namespace<span class="o">)</span>
+    ClaimName:  pvc
+    ReadOnly:   <span class="nb">false
+  </span>kube-api-access-vfx8b:
+    Type:                    Projected <span class="o">(</span>a volume that contains injected data from multiple sources<span class="o">)</span>
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       &lt;nil&gt;
+    DownwardAPI:             <span class="nb">true
+</span>QoS Class:                   BestEffort
+Node-Selectors:              &lt;none&gt;
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+                             node.kubernetes.io/unreachable:NoExecute <span class="nv">op</span><span class="o">=</span>Exists <span class="k">for </span>300s
+Events:
+  Type    Reason     Age   From               Message
+  <span class="nt">----</span>    <span class="nt">------</span>     <span class="nt">----</span>  <span class="nt">----</span>               <span class="nt">-------</span>
+  Normal  Scheduled  63s   default-scheduler  Successfully assigned default/app to k8s-m02
+  Normal  Pulling    62s   kubelet            Pulling image <span class="s2">"nginx"</span>
+  Normal  Pulled     59s   kubelet            Successfully pulled image <span class="s2">"nginx"</span> <span class="k">in </span>3.044922832s
+  Normal  Created    59s   kubelet            Created container app
+  Normal  Started    59s   kubelet            Started container app
+</code></pre></div></div>
+<p>Login to the Container and create a file in the <code class="language-plaintext highlighter-rouge">/data/app/config</code> folder, which is the container MountPath.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> app <span class="nt">--</span> /bin/sh
+<span class="c"># cd /data/app/config</span>
+<span class="c"># ls -l</span>
+total 0
+<span class="c"># touch hello.txt</span>
+<span class="c"># echo "Testing PV, PVC, and SC in K8S!" &gt; hello.txt</span>
+<span class="c"># exit</span>
+</code></pre></div></div>
+<p>Login to the minikube node and check if you are able to view the <code class="language-plaintext highlighter-rouge">hello.txt</code> file in the host.
+On the control plane, there is no such file in the <code class="language-plaintext highlighter-rouge">/data/config</code> folder.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ ls /data/config/
+$ ls -la /data/config/
+total 8
+drwxr-xr-x 2 root root 4096 Feb 28 03:33 .
+drwxr-xr-x 3 root root 4096 Feb 28 03:33 ..
+$ exit
+logout
+</span></code></pre></div></div>
+<p>On the other node, <code class="language-plaintext highlighter-rouge">k8s-m02</code>,  there is the <code class="language-plaintext highlighter-rouge">hello.txt</code> file.  This is because, the <code class="language-plaintext highlighter-rouge">app</code> pod got created in this node.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-n</span> k8s-m02 <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ ls /data/config
+hello.txt
+$ ls -la /data/config/
+total 12
+drwxr-xr-x 2 root root 4096 Feb 28 03:58 .
+drwxr-xr-x 3 root root 4096 Feb 28 03:55 ..
+-rw-r--r-- 1 root root   32 Feb 28 03:58 hello.txt
+$ cat /data/config/hello.txt
+Testing PV, PVC, and SC in K8S!
+$ exit
+logout
+</span></code></pre></div></div>
+<p>We can also view the contents of the <code class="language-plaintext highlighter-rouge">hello.txt</code> file.</p>
+
+<p>Verify the PV, PVC, and SC details.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pv,pvc,sc
+NAME                  CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM         STORAGECLASS   REASON   AGE
+persistentvolume/pv   512m       RWX            Retain           Bound    default/pvc   standard                9m35s
+
+NAME                        STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/pvc   Bound    pv       512m       RWX            standard       8m17s
+
+NAME                                             PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+storageclass.storage.k8s.io/standard <span class="o">(</span>default<span class="o">)</span>   k8s.io/minikube-hostpath   Delete          Immediate           <span class="nb">false                  </span>12d
+</code></pre></div></div>
+<p>Describe the PV one more time, after the Pod creation, to see if there is any change.
+One change that we notice is that the Claim is showing <code class="language-plaintext highlighter-rouge">default/pvc</code> which was empty earlier. Also, Staus changed to <code class="language-plaintext highlighter-rouge">Bound</code> from <code class="language-plaintext highlighter-rouge">Available</code>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pv
+Name:            pv
+Labels:          &lt;none&gt;
+Annotations:     pv.kubernetes.io/bound-by-controller: <span class="nb">yes
+</span>Finalizers:      <span class="o">[</span>kubernetes.io/pv-protection]
+StorageClass:    standard
+Status:          Bound
+Claim:           default/pvc
+Reclaim Policy:  Retain
+Access Modes:    RWX
+VolumeMode:      Filesystem
+Capacity:        512m
+Node Affinity:   &lt;none&gt;
+Message:
+Source:
+    Type:          HostPath <span class="o">(</span>bare host directory volume<span class="o">)</span>
+    Path:          /data/config
+    HostPathType:
+Events:            &lt;none&gt;
+</code></pre></div></div>
+<p>Similarly describe the PVC and look for the changes. The  <code class="language-plaintext highlighter-rouge">Used By</code> value has changed to <code class="language-plaintext highlighter-rouge">app</code> now, showing that it is used by this Pod.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pvc
+Name:          pvc
+Namespace:     default
+StorageClass:  standard
+Status:        Bound
+Volume:        pv
+Labels:        &lt;none&gt;
+Annotations:   pv.kubernetes.io/bind-completed: <span class="nb">yes
+               </span>pv.kubernetes.io/bound-by-controller: <span class="nb">yes
+</span>Finalizers:    <span class="o">[</span>kubernetes.io/pvc-protection]
+Capacity:      512m
+Access Modes:  RWX
+VolumeMode:    Filesystem
+Used By:       app
+Events:        &lt;none&gt;
+</code></pre></div></div>
+<p>Also, look at the StorageClass description. Verify that, <code class="language-plaintext highlighter-rouge">IsDefaultClass:  Yes</code> .</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe sc
+Name:            standard
+IsDefaultClass:  Yes
+Annotations:     kubectl.kubernetes.io/last-applied-configuration<span class="o">={</span><span class="s2">"apiVersion"</span>:<span class="s2">"storage.k8s.io/v1"</span>,<span class="s2">"kind"</span>:<span class="s2">"StorageClass"</span>,<span class="s2">"metadata"</span>:<span class="o">{</span><span class="s2">"annotations"</span>:<span class="o">{</span><span class="s2">"storageclass.kubernetes.io/is-default-class"</span>:<span class="s2">"true"</span><span class="o">}</span>,<span class="s2">"labels"</span>:<span class="o">{</span><span class="s2">"addonmanager.kubernetes.io/mode"</span>:<span class="s2">"EnsureExists"</span><span class="o">}</span>,<span class="s2">"name"</span>:<span class="s2">"standard"</span><span class="o">}</span>,<span class="s2">"provisioner"</span>:<span class="s2">"k8s.io/minikube-hostpath"</span><span class="o">}</span>
+,storageclass.kubernetes.io/is-default-class<span class="o">=</span><span class="nb">true
+</span>Provisioner:           k8s.io/minikube-hostpath
+Parameters:            &lt;none&gt;
+AllowVolumeExpansion:  &lt;<span class="nb">unset</span><span class="o">&gt;</span>
+MountOptions:          &lt;none&gt;
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                &lt;none&gt;
+</code></pre></div></div>
+<p>Now delete the pod.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl delete pod app
+pod <span class="s2">"app"</span> deleted
+</code></pre></div></div>
+<p>After deleting the pod, check if the data is persistent or not. You should still be able to view the contents of the <code class="language-plaintext highlighter-rouge">hello.txt</code> file on the <code class="language-plaintext highlighter-rouge">k8s-m02</code> node, even after deleting the Pod, confirming that the storage is persistent now.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-n</span> k8s-m02 <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ cd /data/config/
+$ cat hello.txt
+Testing PV, PVC, and SC in K8S!
+$ exit
+logout
+</span></code></pre></div></div>
+
+<h3 id="dynamic-binding">Dynamic Binding</h3>
+
+<p>Define a new storage class named <code class="language-plaintext highlighter-rouge">pradeep-sc-demo</code> in the <code class="language-plaintext highlighter-rouge">kube-system</code> namespace  using a sample YAML file.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat sc.yaml</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">StorageClass</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">storage.k8s.io/v1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">kube-system</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">pradeep-sc-demo</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="na">storageclass.beta.kubernetes.io/is-default-class</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">addonmanager.kubernetes.io/mode</span><span class="pi">:</span> <span class="s">Reconcile</span>
+<span class="na">provisioner</span><span class="pi">:</span> <span class="s">k8s.io/minikube-hostpath</span>
+</code></pre></div></div>
+<p>Create the storage class from this YAML file  and verify that it was created.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> sc.yaml
+storageclass.storage.k8s.io/pradeep-sc-demo created
+</code></pre></div></div>
+<p>Now you should see two storageclasses, both with same PROVISIONER details. Also, not the <code class="language-plaintext highlighter-rouge">default</code> value next to the <code class="language-plaintext highlighter-rouge">standard</code> class, which is not present for the newly defined storage class.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get storageclass
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+pradeep-sc-demo      k8s.io/minikube-hostpath   Delete          Immediate           <span class="nb">false                  </span>47s
+standard <span class="o">(</span>default<span class="o">)</span>   k8s.io/minikube-hostpath   Delete          Immediate           <span class="nb">false                  </span>12d
+</code></pre></div></div>
+
+<p>Let us modify the PVC definition file to specify this <code class="language-plaintext highlighter-rouge">pradeep-sc-demo</code> StorageClass, instead of the <code class="language-plaintext highlighter-rouge">standard</code>.
+First, let us delete the existing PVC.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl delete pvc pvc
+persistentvolumeclaim <span class="s2">"pvc"</span> deleted
+</code></pre></div></div>
+<p>Modify the PVC definition, to include the new storage class.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pvc.yaml</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">PersistentVolumeClaim</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">pvc</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">storageClassName</span><span class="pi">:</span> <span class="s">pradeep-sc-demo</span>
+  <span class="na">accessModes</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">ReadWriteMany</span>
+  <span class="na">resources</span><span class="pi">:</span>
+    <span class="na">requests</span><span class="pi">:</span>
+      <span class="na">storage</span><span class="pi">:</span> <span class="s">256m</span>
+</code></pre></div></div>
+<p>Create the PVC from the modified definition file.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pvc.yaml
+persistentvolumeclaim/pvc created
+</code></pre></div></div>
+<p>Verify the Status of the new PVC.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pvc
+NAME   STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS      AGE
+pvc    Pending                                      pradeep-sc-demo   64s
+</code></pre></div></div>
+<p>It is still showing <code class="language-plaintext highlighter-rouge">Pending</code>, to find out why let us describe it.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe pvc
+Name:          pvc
+Namespace:     default
+StorageClass:  pradeep-sc-demo
+Status:        Pending
+Volume:
+Labels:        &lt;none&gt;
+Annotations:   volume.beta.kubernetes.io/storage-provisioner: k8s.io/minikube-hostpath
+               volume.kubernetes.io/storage-provisioner: k8s.io/minikube-hostpath
+Finalizers:    <span class="o">[</span>kubernetes.io/pvc-protection]
+Capacity:
+Access Modes:
+VolumeMode:    Filesystem
+Used By:       &lt;none&gt;
+Events:
+  Type    Reason                Age               From                         Message
+  <span class="nt">----</span>    <span class="nt">------</span>                <span class="nt">----</span>              <span class="nt">----</span>                         <span class="nt">-------</span>
+  Normal  ExternalProvisioning  2s <span class="o">(</span>x8 over 76s<span class="o">)</span>  persistentvolume-controller  waiting <span class="k">for </span>a volume to be created, either by external provisioner <span class="s2">"k8s.io/minikube-hostpath"</span> or manually created by system administrator
+</code></pre></div></div>
+
+<p>We can see that the PVC is waiting for a matching volume to be created.</p>
+
+<p>Our existing PV is using the <code class="language-plaintext highlighter-rouge">standard</code> storageclass which is not matching with this PVC definition. So let us delete the existing PV and modify it to specify the new SC.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl delete pv pv
+persistentvolume <span class="s2">"pv"</span> deleted
+</code></pre></div></div>
+<p>Here is the modified PV definition.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pv.yaml</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">PersistentVolume</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">pv</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">storageClassName</span><span class="pi">:</span> <span class="s">pradeep-sc-demo</span>
+  <span class="na">capacity</span><span class="pi">:</span>
+    <span class="na">storage</span><span class="pi">:</span> <span class="s">512m</span>
+  <span class="na">accessModes</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">ReadWriteMany</span>
+  <span class="na">hostPath</span><span class="pi">:</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">/data/config</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pv,pvc
+NAME                  CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM         STORAGECLASS      REASON   AGE
+persistentvolume/pv   512m       RWX            Retain           Bound    default/pvc   pradeep-sc-demo            15s
+
+NAME                        STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS      AGE
+persistentvolumeclaim/pvc   Bound    pv       512m       RWX            pradeep-sc-demo   6m29s
+</code></pre></div></div>
+<p>Now that the storageclass is matching, both the PV and PVC are in <code class="language-plaintext highlighter-rouge">Bound</code> State.</p>
+
+<p>Create the <code class="language-plaintext highlighter-rouge">app</code> pod again using the same manifest file that we used earlier.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat pod.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">app</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">app</span>
+    <span class="na">volumeMounts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/data/app/config"</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">configpvc</span>
+  <span class="na">volumes</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">configpvc</span>
+    <span class="na">persistentVolumeClaim</span><span class="pi">:</span>
+      <span class="na">claimName</span><span class="pi">:</span> <span class="s">pvc</span>
+  <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create <span class="nt">-f</span> pod.yaml
+pod/app created
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods app <span class="nt">-o</span> wide
+NAME   READY   STATUS    RESTARTS   AGE     IP           NODE      NOMINATED NODE   READINESS GATES
+app    1/1     Running   0          2m19s   10.244.1.6   k8s-m02   &lt;none&gt;           &lt;none&gt;
+</code></pre></div></div>
+<p>Shell into the Pod and create a file in the mounted directory.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl <span class="nb">exec </span>app <span class="nt">-it</span> <span class="nt">--</span> /bin/sh
+<span class="c"># cd /data/app/config</span>
+<span class="c"># ls -l</span>
+total 4
+<span class="nt">-rw-r--r--</span> 1 root root 32 Feb 28 03:58 hello.txt
+<span class="c"># touch HiAgain.txt</span>
+<span class="c"># echo "Hello again from K8s PV,PVC, and SC!" &gt; HiAgain.txt</span>
+<span class="c"># cat HiAgain.txt</span>
+Hello again from K8s PV,PVC, and SC!
+<span class="c"># exit</span>
+</code></pre></div></div>
+<p>Becuase of persistent nature, we still see the old <code class="language-plaintext highlighter-rouge">hello.txt</code> file in this new container. 
+We have created another file called <code class="language-plaintext highlighter-rouge">HiAgain.txt</code> with some sample text.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pv,pvc,sc
+NAME                  CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM         STORAGECLASS      REASON   AGE
+persistentvolume/pv   512m       RWX            Retain           Bound    default/pvc   pradeep-sc-demo            6m43s
+
+NAME                        STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS      AGE
+persistentvolumeclaim/pvc   Bound    pv       512m       RWX            pradeep-sc-demo   12m
+
+NAME                                             PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+storageclass.storage.k8s.io/pradeep-sc-demo      k8s.io/minikube-hostpath   Delete          Immediate           <span class="nb">false                  </span>18m
+storageclass.storage.k8s.io/standard <span class="o">(</span>default<span class="o">)</span>   k8s.io/minikube-hostpath   Delete          Immediate           <span class="nb">false                  </span>12d
+</code></pre></div></div>
+
+<p>Let us delete the Pod again and verify the files.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl delete pod app
+pod <span class="s2">"app"</span> deleted
+</code></pre></div></div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube ssh <span class="nt">-n</span> k8s-m02 <span class="nt">-p</span> k8s
+                         _             _
+            _         _ <span class="o">(</span> <span class="o">)</span>           <span class="o">(</span> <span class="o">)</span>
+  ___ ___  <span class="o">(</span>_<span class="o">)</span>  ___  <span class="o">(</span>_<span class="o">)</span>| |/<span class="s1">')  _   _ | |_      __
+/'</span> _ <span class="sb">`</span> _ <span class="sb">`</span><span class="se">\|</span> |/<span class="s1">' _ `\| || , &lt;  ( ) ( )| '</span>_<span class="sb">`</span><span class="se">\ </span> /<span class="s1">'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'</span><span class="o">(</span>_,__/<span class="s1">'`\____)
+
+$ cd /data/config/
+$ ls
+HiAgain.txt  hello.txt
+$ ls -la
+total 16
+drwxr-xr-x 2 root root 4096 Feb 28 04:50 .
+drwxr-xr-x 3 root root 4096 Feb 28 03:55 ..
+-rw-r--r-- 1 root root   37 Feb 28 04:50 HiAgain.txt
+-rw-r--r-- 1 root root   32 Feb 28 03:58 hello.txt
+$ cat HiAgain.txt
+Hello again from K8s PV,PVC, and SC!
+$ cat hello.txt
+Testing PV, PVC, and SC in K8S!
+$ exit
+logout
+</span></code></pre></div></div>
+<p>This confirms that, the storage is persistent again (even after Pod deletion).</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-02-28T10:55:04+05:30">February 28, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Storage+Class%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F28%2Fkubernetes-storageclass.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F28%2Fkubernetes-storageclass.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F02%2F28%2Fkubernetes-storageclass.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/02/27/kubernetes-persistentvolume-claims.html" class="pagination--pager" title="Kubernetes Persistent Volumes and Claims
+">Previous</a>
+    
+    
+      <a href="/blog/kubernetes/2022/03/01/kubectl-annotate.html" class="pagination--pager" title="Kubectl Annotate
+">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/nginx-ingress.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-ingress.html" rel="permalink">Kubernetes Ingress Controller
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Ingress Controller
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          16 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          19 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,1214 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Kubernetes Ingress Controller - Pradeep Gadde</title>
+<meta name="description" content="Kubernetes Ingress Controller">
+
+
+  <meta name="author" content="Kubernetes">
+  
+  <meta property="article:author" content="Kubernetes">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Pradeep Gadde">
+<meta property="og:title" content="Kubernetes Ingress Controller">
+<meta property="og:url" content="https://www.pradeepgadde.com/blog/kubernetes/2022/03/21/kubernetes-ingress.html">
+
+
+  <meta property="og:description" content="Kubernetes Ingress Controller">
+
+
+
+  <meta property="og:image" content="https://www.pradeepgadde.com/blog/assets/images/nginx-ingress.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-03-21T10:55:04+05:30">
+
+
+
+
+
+
+<link rel="canonical" href="https://www.pradeepgadde.com/blog/kubernetes/2022/03/21/kubernetes-ingress.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Pradeep Gadde",
+      "url": "https://www.pradeepgadde.com/blog/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="Pradeep Gadde Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/blog/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single wide">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/blog/"><img src="/blog/assets/images/qr.gif" alt="Pradeep Gadde"></a>
+        
+        <a class="site-title" href="/blog/">
+          Pradeep Gadde
+          <span class="site-subtitle">Be Curious!</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/blog/about/">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/year-archive/">Posts</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/categories/">Categories</a>
+            </li><li class="masthead__menu-item">
+              <a href="/blog/tags/">Tags</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.pradeepgadde.com/blog/">
+        <img src="/blog/assets/images/kubernetes.png" alt="Kubernetes" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.pradeepgadde.com/blog/" itemprop="url">Kubernetes</a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+  
+    
+      
+      <h3>Blog</h3>
+      <p>Checkout other topics</p>
+
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <span class="nav__sub-title">Kubernetes</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Kubernetes Core Concepts</a></li>
+          
+            <li><a href="/blog/">Kubernetes Scheduling</a></li>
+          
+            <li><a href="/blog/">Kubernetes Application Life Cycle Management</a></li>
+          
+            <li><a href="/blog/">Kubernetes Storage</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">OpenShift</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">CodeReadyContainers</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Automation</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">Jenkins</a></li>
+          
+            <li><a href="/blog/">NITA</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Networking</span>
+        
+
+        
+        <ul>
+          
+            <li><a href="/blog/">EVPN-VXLAN</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+    
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Kubernetes Ingress Controller">
+    <meta itemprop="description" content="Kubernetes Ingress Controller">
+    <meta itemprop="datePublished" content="2022-03-21T10:55:04+05:30">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.pradeepgadde.com/blog/kubernetes/2022/03/21/kubernetes-ingress.html" class="u-url" itemprop="url">Kubernetes Ingress Controller
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          15 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu"><li><a href="#kubernetes-ingress-controller">Kubernetes Ingress Controller</a><ul><li><a href="#enable-ingress-addon">Enable Ingress Addon</a></li><li><a href="#deploy-a-hello-world-app">Deploy a Hello, World App!</a></li><li><a href="#create-an-ingress">Create an Ingress</a></li><li><a href="#create-a-second-deployment">Create a second Deployment</a></li><li><a href="#test-your-ingress">Test your Ingress</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="kubernetes-ingress-controller">Kubernetes Ingress Controller</h1>
+
+<h2 id="enable-ingress-addon">Enable Ingress Addon</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube addons list
+|-----------------------------|----------|--------------|--------------------------------|
+|         ADDON NAME          | PROFILE  |    STATUS    |           MAINTAINER           |
+|-----------------------------|----------|--------------|--------------------------------|
+| ambassador                  | minikube | disabled     | third-party <span class="o">(</span>ambassador<span class="o">)</span>       |
+| auto-pause                  | minikube | disabled     | google                         |
+| csi-hostpath-driver         | minikube | disabled     | kubernetes                     |
+| dashboard                   | minikube | disabled     | kubernetes                     |
+| default-storageclass        | minikube | enabled ✅   | kubernetes                     |
+| efk                         | minikube | disabled     | third-party <span class="o">(</span>elastic<span class="o">)</span>          |
+| freshpod                    | minikube | disabled     | google                         |
+| gcp-auth                    | minikube | disabled     | google                         |
+| gvisor                      | minikube | disabled     | google                         |
+| helm-tiller                 | minikube | disabled     | third-party <span class="o">(</span>helm<span class="o">)</span>             |
+| ingress                     | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| ingress-dns                 | minikube | disabled     | google                         |
+| istio                       | minikube | disabled     | third-party <span class="o">(</span>istio<span class="o">)</span>            |
+| istio-provisioner           | minikube | disabled     | third-party <span class="o">(</span>istio<span class="o">)</span>            |
+| kong                        | minikube | disabled     | third-party <span class="o">(</span>Kong HQ<span class="o">)</span>          |
+| kubevirt                    | minikube | disabled     | third-party <span class="o">(</span>kubevirt<span class="o">)</span>         |
+| logviewer                   | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| metallb                     | minikube | disabled     | third-party <span class="o">(</span>metallb<span class="o">)</span>          |
+| metrics-server              | minikube | disabled     | kubernetes                     |
+| nvidia-driver-installer     | minikube | disabled     | google                         |
+| nvidia-gpu-device-plugin    | minikube | disabled     | third-party <span class="o">(</span>nvidia<span class="o">)</span>           |
+| olm                         | minikube | disabled     | third-party <span class="o">(</span>operator          |
+|                             |          |              | framework<span class="o">)</span>                     |
+| pod-security-policy         | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| portainer                   | minikube | disabled     | portainer.io                   |
+| registry                    | minikube | disabled     | google                         |
+| registry-aliases            | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| registry-creds              | minikube | disabled     | third-party <span class="o">(</span>upmc enterprises<span class="o">)</span> |
+| storage-provisioner         | minikube | enabled ✅   | google                         |
+| storage-provisioner-gluster | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| volumesnapshots             | minikube | disabled     | kubernetes                     |
+|-----------------------------|----------|--------------|--------------------------------|
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Enable the <code class="language-plaintext highlighter-rouge">ingress</code> addon which is currently disabled in this environment.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube addons <span class="nb">enable </span>ingress
+    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+    ▪ Using image k8s.gcr.io/ingress-nginx/controller:v1.1.1
+🔎  Verifying ingress addon...
+🌟  The <span class="s1">'ingress'</span> addon is enabled
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Verify the addons list again, and confirm that the <code class="language-plaintext highlighter-rouge">ingress</code> is enabled.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube addons list
+|-----------------------------|----------|--------------|--------------------------------|
+|         ADDON NAME          | PROFILE  |    STATUS    |           MAINTAINER           |
+|-----------------------------|----------|--------------|--------------------------------|
+| ambassador                  | minikube | disabled     | third-party <span class="o">(</span>ambassador<span class="o">)</span>       |
+| auto-pause                  | minikube | disabled     | google                         |
+| csi-hostpath-driver         | minikube | disabled     | kubernetes                     |
+| dashboard                   | minikube | disabled     | kubernetes                     |
+| default-storageclass        | minikube | enabled ✅   | kubernetes                     |
+| efk                         | minikube | disabled     | third-party <span class="o">(</span>elastic<span class="o">)</span>          |
+| freshpod                    | minikube | disabled     | google                         |
+| gcp-auth                    | minikube | disabled     | google                         |
+| gvisor                      | minikube | disabled     | google                         |
+| helm-tiller                 | minikube | disabled     | third-party <span class="o">(</span>helm<span class="o">)</span>             |
+| ingress                     | minikube | enabled ✅   | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| ingress-dns                 | minikube | disabled     | google                         |
+| istio                       | minikube | disabled     | third-party <span class="o">(</span>istio<span class="o">)</span>            |
+| istio-provisioner           | minikube | disabled     | third-party <span class="o">(</span>istio<span class="o">)</span>            |
+| kong                        | minikube | disabled     | third-party <span class="o">(</span>Kong HQ<span class="o">)</span>          |
+| kubevirt                    | minikube | disabled     | third-party <span class="o">(</span>kubevirt<span class="o">)</span>         |
+| logviewer                   | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| metallb                     | minikube | disabled     | third-party <span class="o">(</span>metallb<span class="o">)</span>          |
+| metrics-server              | minikube | disabled     | kubernetes                     |
+| nvidia-driver-installer     | minikube | disabled     | google                         |
+| nvidia-gpu-device-plugin    | minikube | disabled     | third-party <span class="o">(</span>nvidia<span class="o">)</span>           |
+| olm                         | minikube | disabled     | third-party <span class="o">(</span>operator          |
+|                             |          |              | framework<span class="o">)</span>                     |
+| pod-security-policy         | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| portainer                   | minikube | disabled     | portainer.io                   |
+| registry                    | minikube | disabled     | google                         |
+| registry-aliases            | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| registry-creds              | minikube | disabled     | third-party <span class="o">(</span>upmc enterprises<span class="o">)</span> |
+| storage-provisioner         | minikube | enabled ✅   | google                         |
+| storage-provisioner-gluster | minikube | disabled     | unknown <span class="o">(</span>third-party<span class="o">)</span>          |
+| volumesnapshots             | minikube | disabled     | kubernetes                     |
+|-----------------------------|----------|--------------|--------------------------------|
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Verify all resources that got created as part of this addon installation.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-n</span> ingress-nginx
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-cvwv7       0/1     Completed   0          65s
+ingress-nginx-admission-patch-zsrq4        0/1     Completed   1          65s
+ingress-nginx-controller-cc8496874-6zr4h   1/1     Running     0          65s
+pradeep@learnk8s<span class="nv">$ </span>kubectl get all <span class="nt">-n</span> ingress-nginx
+NAME                                           READY   STATUS      RESTARTS   AGE
+pod/ingress-nginx-admission-create-cvwv7       0/1     Completed   0          83s
+pod/ingress-nginx-admission-patch-zsrq4        0/1     Completed   1          83s
+pod/ingress-nginx-controller-cc8496874-6zr4h   1/1     Running     0          83s
+
+NAME                                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                      AGE
+service/ingress-nginx-controller             NodePort    10.101.85.4      &lt;none&gt;        80:30419/TCP,443:30336/TCP   83s
+service/ingress-nginx-controller-admission   ClusterIP   10.104.163.136   &lt;none&gt;        443/TCP                      83s
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ingress-nginx-controller   1/1     1            1           83s
+
+NAME                                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/ingress-nginx-controller-cc8496874   1         1         1       83s
+
+NAME                                       COMPLETIONS   DURATION   AGE
+job.batch/ingress-nginx-admission-create   1/1           10s        83s
+job.batch/ingress-nginx-admission-patch    1/1           11s        83s
+pradeep@learnk8s<span class="nv">$ </span>
+</code></pre></div></div>
+<h2 id="deploy-a-hello-world-app">Deploy a Hello, World App!</h2>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create deployment web <span class="nt">--image</span><span class="o">=</span>gcr.io/google-samples/hello-app:1.0
+deployment.apps/web created
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<p>Expose the deployment as  a NodePort Service on port number 8080.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl expose deployment web <span class="nt">--type</span><span class="o">=</span>NodePort -
+<span class="nt">-port</span><span class="o">=</span>8080
+service/web exposed
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Verify that the service is created properly.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get service web
+NAME   TYPE       CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>          AGE
+web    NodePort   10.105.47.136   &lt;none&gt;        8080:31270/TCP   11s
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Get the URL for this newly created service.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>minikube service web <span class="nt">--url</span>
+http://172.16.30.6:31270
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Access the URL</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>curl http://172.16.30.6:31270
+Hello, world!
+Version: 1.0.0
+Hostname: web-746c8679d4-nfkcw
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="create-an-ingress">Create an Ingress</h2>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat example-ingress.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">networking.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Ingress</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">example-ingress</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="na">nginx.ingress.kubernetes.io/rewrite-target</span><span class="pi">:</span> <span class="s">/$1</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">rules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s">hello-world.info</span>
+      <span class="na">http</span><span class="pi">:</span>
+        <span class="na">paths</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
+            <span class="na">pathType</span><span class="pi">:</span> <span class="s">Prefix</span>
+            <span class="na">backend</span><span class="pi">:</span>
+              <span class="na">service</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">web</span>
+                <span class="na">port</span><span class="pi">:</span>
+                  <span class="na">number</span><span class="pi">:</span> <span class="m">8080</span>
+<span class="s">pradeep@learnk8s$</span>
+</code></pre></div></div>
+<p>Create the Ingress using the above definition.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$kubectl</span> apply <span class="nt">-f</span> example-ingress.yaml
+ingress.networking.k8s.io/example-ingress created
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<p>Verify that the Ingress is created.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get ingress
+NAME              CLASS   HOSTS              ADDRESS       PORTS   AGE
+example-ingress   nginx   hello-world.info   172.16.30.6   80      87s
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<p>Add the <code class="language-plaintext highlighter-rouge">172.16.30.6	hello-world.info</code> to the bottom of the /etc/hosts file on your computer (you will need administrator access):</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span><span class="nb">cat</span> /etc/hosts
+<span class="c">##</span>
+<span class="c"># Host Database</span>
+<span class="c">#</span>
+<span class="c"># localhost is used to configure the loopback interface</span>
+<span class="c"># when the system is booting.  Do not change this entry.</span>
+<span class="c">##</span>
+127.0.0.1	localhost
+255.255.255.255	broadcasthost
+::1             localhost
+<span class="c"># Added by Docker Desktop</span>
+<span class="c"># To allow the same kube context to work on the host and the container:</span>
+127.0.0.1 kubernetes.docker.internal
+<span class="c"># End of section</span>
+172.16.30.6	hello-world.info
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>curl hello-world.info
+Hello, world!
+Version: 1.0.0
+Hostname: web-746c8679d4-nfkcw
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="create-a-second-deployment">Create a second Deployment</h2>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl create deployment web2 <span class="nt">--image</span><span class="o">=</span>gcr.io/google-samples/hello-app:2.0
+deployment.apps/web2 created
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Expose the deployment.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl expose deployment web2 <span class="nt">--port</span><span class="o">=</span>8080 <span class="nt">--type</span><span class="o">=</span>NodePort
+service/web2 exposed
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<p>Edit the existing <code class="language-plaintext highlighter-rouge">example-ingress.yaml</code> manifest, and add the following lines at the end:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">pradeep@learnk8s$ cat example-ingress.yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">networking.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Ingress</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">example-ingress</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="na">nginx.ingress.kubernetes.io/rewrite-target</span><span class="pi">:</span> <span class="s">/$1</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">rules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s">hello-world.info</span>
+      <span class="na">http</span><span class="pi">:</span>
+        <span class="na">paths</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
+            <span class="na">pathType</span><span class="pi">:</span> <span class="s">Prefix</span>
+            <span class="na">backend</span><span class="pi">:</span>
+              <span class="na">service</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">web</span>
+                <span class="na">port</span><span class="pi">:</span>
+                  <span class="na">number</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/v2</span>
+            <span class="na">pathType</span><span class="pi">:</span> <span class="s">Prefix</span>
+            <span class="na">backend</span><span class="pi">:</span>
+              <span class="na">service</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">web2</span>
+                <span class="na">port</span><span class="pi">:</span>
+                  <span class="na">number</span><span class="pi">:</span> <span class="m">8080</span>
+<span class="s">pradeep@learnk8s$</span>
+</code></pre></div></div>
+<p>Apply the changes.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl apply <span class="nt">-f</span> example-ingress.yaml
+ingress.networking.k8s.io/example-ingress configured
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="test-your-ingress">Test your Ingress</h2>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>curl hello-world.info
+Hello, world!
+Version: 1.0.0
+Hostname: web-746c8679d4-nfkcw
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Access the 2nd version of the Hello World app.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>curl hello-world.info/v2
+Hello, world!
+Version: 2.0.0
+Hostname: web2-5858b4c7c5-krt4l
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s$ kubectl get ingress
+NAME              CLASS   HOSTS              ADDRESS       PORTS   AGE
+example-ingress   nginx   hello-world.info   172.16.30.6   80      11m
+pradeep@learnk8s$
+</code></pre></div></div>
+<p>Let us describe the ingress to see how it looks like.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe ingress
+Name:             example-ingress
+Namespace:        default
+Address:          172.16.30.6
+Default backend:  default-http-backend:80 <span class="o">(</span>&lt;error: endpoints <span class="s2">"default-http-backend"</span> not found&gt;<span class="o">)</span>
+Rules:
+  Host              Path  Backends
+  <span class="nt">----</span>              <span class="nt">----</span>  <span class="nt">--------</span>
+  hello-world.info
+                    /     web:8080 <span class="o">(</span>10.244.205.195:8080<span class="o">)</span>
+                    /v2   web2:8080 <span class="o">(</span>10.244.151.3:8080<span class="o">)</span>
+Annotations:        nginx.ingress.kubernetes.io/rewrite-target: /<span class="nv">$1</span>
+Events:
+  Type    Reason  Age                From                      Message
+  <span class="nt">----</span>    <span class="nt">------</span>  <span class="nt">----</span>               <span class="nt">----</span>                      <span class="nt">-------</span>
+  Normal  Sync    12m <span class="o">(</span>x3 over 20m<span class="o">)</span>  nginx-ingress-controller  Scheduled <span class="k">for </span><span class="nb">sync
+</span>pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<p>We can see one host (<code class="language-plaintext highlighter-rouge">hello-world.info</code>) and two paths (<code class="language-plaintext highlighter-rouge">/</code> and <code class="language-plaintext highlighter-rouge">/v2</code>), two backends (<code class="language-plaintext highlighter-rouge">web:8080</code> and <code class="language-plaintext highlighter-rouge">web2:8080</code>). These two services point to the respective Pods.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get pods <span class="nt">-o</span> wide
+NAME                    READY   STATUS    RESTARTS   AGE   IP               NODE           NOMINATED NODE   READINESS GATES
+web-746c8679d4-nfkcw    1/1     Running   0          75m   10.244.205.195   minikube-m02   &lt;none&gt;           &lt;none&gt;
+web2-5858b4c7c5-krt4l   1/1     Running   0          66m   10.244.151.3     minikube-m03   &lt;none&gt;           &lt;none&gt;
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<p>What happens to the requests sent to a path different from both of these (<code class="language-plaintext highlighter-rouge">/</code> and <code class="language-plaintext highlighter-rouge">/v2</code>)?
+Those requests are handled by the default backend.</p>
+
+<p>From the above description, we can see there is a default backend <code class="language-plaintext highlighter-rouge">default-http-backend:80</code> which is not defined yet, so there is an error.
+Let us test few undefined paths like (<code class="language-plaintext highlighter-rouge">/v3</code>, <code class="language-plaintext highlighter-rouge">/v5</code> etc)</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>curl hello-world.info/v3
+Hello, world!
+Version: 1.0.0
+Hostname: web-746c8679d4-nfkcw
+pradeep@learnk8s<span class="nv">$ </span>curl hello-world.info/v5
+Hello, world!
+Version: 1.0.0
+Hostname: web-746c8679d4-nfkcw
+</code></pre></div></div>
+
+<p>It looks like all these undefined paths are handled by the <code class="language-plaintext highlighter-rouge">web:8080</code> backend only. According to Kubernetes documentation, If <code class="language-plaintext highlighter-rouge">defaultBackend</code> is not set, the handling of requests that do not match any of the rules will be up to the ingress controller (consult the documentation for your ingress controller to find out how it handles this case).</p>
+
+<p>If none of the hosts or paths match the HTTP request in the Ingress objects, the traffic is routed to your default backend.</p>
+
+<p>Let us edit the ingress, to add a defaultBackend, in this case , change it to <code class="language-plaintext highlighter-rouge">web2</code>.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl edit ingress example-ingress
+ingress.networking.k8s.io/example-ingress edited
+</code></pre></div></div>
+<p>Describe it again, to see the changes.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl describe ingress
+Name:             example-ingress
+Namespace:        default
+Address:          172.16.30.6
+Default backend:  web2:8080 <span class="o">(</span>10.244.151.3:8080<span class="o">)</span>
+Rules:
+  Host              Path  Backends
+  <span class="nt">----</span>              <span class="nt">----</span>  <span class="nt">--------</span>
+  hello-world.info
+                    /     web:8080 <span class="o">(</span>10.244.205.195:8080<span class="o">)</span>
+                    /v2   web2:8080 <span class="o">(</span>10.244.151.3:8080<span class="o">)</span>
+Annotations:        nginx.ingress.kubernetes.io/rewrite-target: /<span class="nv">$1</span>
+Events:
+  Type    Reason  Age                From                      Message
+  <span class="nt">----</span>    <span class="nt">------</span>  <span class="nt">----</span>               <span class="nt">----</span>                      <span class="nt">-------</span>
+  Normal  Sync    11s <span class="o">(</span>x4 over 78m<span class="o">)</span>  nginx-ingress-controller  Scheduled <span class="k">for </span><span class="nb">sync
+</span>pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+<p>This line <code class="language-plaintext highlighter-rouge">Default backend:  web2:8080 (10.244.151.3:8080)</code> confirms our change.
+List out all the endpoints.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl get ep
+NAME         ENDPOINTS             AGE
+kubernetes   172.16.30.6:8443      47h
+web          10.244.205.195:8080   87m
+web2         10.244.151.3:8080     78m
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+<p>Let us look at the ingress controller logs.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pradeep@learnk8s<span class="nv">$ </span>kubectl <span class="nt">-n</span> ingress-nginx logs ingress-nginx-controller-cc8496874-6zr4h
+<span class="nt">-------------------------------------------------------------------------------</span>
+NGINX Ingress controller
+  Release:       v1.1.1
+  Build:         a17181e43ec85534a6fea968d95d019c5a4bc8cf
+  Repository:    https://github.com/kubernetes/ingress-nginx
+  nginx version: nginx/1.19.9
+
+<span class="nt">-------------------------------------------------------------------------------</span>
+
+W0321 15:42:29.028539       9 client_config.go:615] Neither <span class="nt">--kubeconfig</span> nor <span class="nt">--master</span> was specified.  Using the inClusterConfig.  This might not work.
+I0321 15:42:29.028983       9 main.go:223] <span class="s2">"Creating API client"</span> <span class="nv">host</span><span class="o">=</span><span class="s2">"https://10.96.0.1:443"</span>
+I0321 15:42:29.057278       9 main.go:267] <span class="s2">"Running in Kubernetes cluster"</span> <span class="nv">major</span><span class="o">=</span><span class="s2">"1"</span> <span class="nv">minor</span><span class="o">=</span><span class="s2">"23"</span> <span class="nv">git</span><span class="o">=</span><span class="s2">"v1.23.3"</span> <span class="nv">state</span><span class="o">=</span><span class="s2">"clean"</span> <span class="nv">commit</span><span class="o">=</span><span class="s2">"816c97ab8cff8a1c72eccca1026f7820e93e0d25"</span> <span class="nv">platform</span><span class="o">=</span><span class="s2">"linux/amd64"</span>
+I0321 15:42:29.317187       9 main.go:104] <span class="s2">"SSL fake certificate created"</span> <span class="nv">file</span><span class="o">=</span><span class="s2">"/etc/ingress-controller/ssl/default-fake-certificate.pem"</span>
+I0321 15:42:29.374201       9 ssl.go:531] <span class="s2">"loading tls certificate"</span> <span class="nv">path</span><span class="o">=</span><span class="s2">"/usr/local/certificates/cert"</span> <span class="nv">key</span><span class="o">=</span><span class="s2">"/usr/local/certificates/key"</span>
+I0321 15:42:29.419869       9 nginx.go:255] <span class="s2">"Starting NGINX Ingress controller"</span>
+I0321 15:42:29.437178       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"ConfigMap"</span>, Namespace:<span class="s2">"ingress-nginx"</span>, Name:<span class="s2">"ingress-nginx-controller"</span>, UID:<span class="s2">"d14f8541-76a0-4357-b9ad-38c7ce8f6586"</span>, APIVersion:<span class="s2">"v1"</span>, ResourceVersion:<span class="s2">"12223"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'CREATE'</span> ConfigMap ingress-nginx/ingress-nginx-controller
+I0321 15:42:29.442938       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"ConfigMap"</span>, Namespace:<span class="s2">"ingress-nginx"</span>, Name:<span class="s2">"tcp-services"</span>, UID:<span class="s2">"9cffa0f1-6754-4bfd-bf78-6cae4febc393"</span>, APIVersion:<span class="s2">"v1"</span>, ResourceVersion:<span class="s2">"12224"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'CREATE'</span> ConfigMap ingress-nginx/tcp-services
+I0321 15:42:29.443183       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"ConfigMap"</span>, Namespace:<span class="s2">"ingress-nginx"</span>, Name:<span class="s2">"udp-services"</span>, UID:<span class="s2">"3ac9b32a-17b9-4824-bc0b-51a609648e9c"</span>, APIVersion:<span class="s2">"v1"</span>, ResourceVersion:<span class="s2">"12225"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'CREATE'</span> ConfigMap ingress-nginx/udp-services
+I0321 15:42:30.622870       9 nginx.go:297] <span class="s2">"Starting NGINX process"</span>
+I0321 15:42:30.623750       9 leaderelection.go:248] attempting to acquire leader lease ingress-nginx/ingress-controller-leader...
+I0321 15:42:30.624864       9 controller.go:155] <span class="s2">"Configuration changes detected, backend reload required"</span>
+I0321 15:42:30.623967       9 nginx.go:317] <span class="s2">"Starting validation webhook"</span> <span class="nv">address</span><span class="o">=</span><span class="s2">":8443"</span> <span class="nv">certPath</span><span class="o">=</span><span class="s2">"/usr/local/certificates/cert"</span> <span class="nv">keyPath</span><span class="o">=</span><span class="s2">"/usr/local/certificates/key"</span>
+I0321 15:42:30.666454       9 leaderelection.go:258] successfully acquired lease ingress-nginx/ingress-controller-leader
+I0321 15:42:30.667675       9 status.go:84] <span class="s2">"New leader elected"</span> <span class="nv">identity</span><span class="o">=</span><span class="s2">"ingress-nginx-controller-cc8496874-6zr4h"</span>
+I0321 15:42:30.700891       9 status.go:214] <span class="s2">"POD is not ready"</span> <span class="nv">pod</span><span class="o">=</span><span class="s2">"ingress-nginx/ingress-nginx-controller-cc8496874-6zr4h"</span> <span class="nv">node</span><span class="o">=</span><span class="s2">"minikube"</span>
+I0321 15:42:30.884747       9 controller.go:172] <span class="s2">"Backend successfully reloaded"</span>
+I0321 15:42:30.885032       9 controller.go:183] <span class="s2">"Initial sync, sleeping for 1 second"</span>
+I0321 15:42:30.885722       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Pod"</span>, Namespace:<span class="s2">"ingress-nginx"</span>, Name:<span class="s2">"ingress-nginx-controller-cc8496874-6zr4h"</span>, UID:<span class="s2">"de6796ef-94a6-499c-b9b5-418c39cc62c0"</span>, APIVersion:<span class="s2">"v1"</span>, ResourceVersion:<span class="s2">"12337"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'RELOAD'</span> NGINX reload triggered due to a change <span class="k">in </span>configuration
+I0321 15:56:40.753346       9 admission.go:149] processed ingress via admission controller <span class="o">{</span>testedIngressLength:1 testedIngressTime:0.412s renderingIngressLength:1 renderingIngressTime:0.009s admissionTime:18.0kBs testedConfigurationSize:0.421<span class="o">}</span>
+I0321 15:56:40.755944       9 main.go:101] <span class="s2">"successfully validated configuration, accepting"</span> <span class="nv">ingress</span><span class="o">=</span><span class="s2">"default/example-ingress"</span>
+I0321 15:56:40.794396       9 store.go:424] <span class="s2">"Found valid IngressClass"</span> <span class="nv">ingress</span><span class="o">=</span><span class="s2">"default/example-ingress"</span> <span class="nv">ingressclass</span><span class="o">=</span><span class="s2">"nginx"</span>
+I0321 15:56:40.796827       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Ingress"</span>, Namespace:<span class="s2">"default"</span>, Name:<span class="s2">"example-ingress"</span>, UID:<span class="s2">"51471ff6-1982-47da-85ee-a9356165df9f"</span>, APIVersion:<span class="s2">"networking.k8s.io/v1"</span>, ResourceVersion:<span class="s2">"13112"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'Sync'</span> Scheduled <span class="k">for </span><span class="nb">sync
+</span>I0321 15:56:40.802072       9 controller.go:155] <span class="s2">"Configuration changes detected, backend reload required"</span>
+I0321 15:56:40.979390       9 controller.go:172] <span class="s2">"Backend successfully reloaded"</span>
+I0321 15:56:40.988286       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Pod"</span>, Namespace:<span class="s2">"ingress-nginx"</span>, Name:<span class="s2">"ingress-nginx-controller-cc8496874-6zr4h"</span>, UID:<span class="s2">"de6796ef-94a6-499c-b9b5-418c39cc62c0"</span>, APIVersion:<span class="s2">"v1"</span>, ResourceVersion:<span class="s2">"12337"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'RELOAD'</span> NGINX reload triggered due to a change <span class="k">in </span>configuration
+I0321 15:57:28.297662       9 status.go:299] <span class="s2">"updating Ingress status"</span> <span class="nv">namespace</span><span class="o">=</span><span class="s2">"default"</span> <span class="nv">ingress</span><span class="o">=</span><span class="s2">"example-ingress"</span> <span class="nv">currentValue</span><span class="o">=[]</span> <span class="nv">newValue</span><span class="o">=[{</span>IP:172.16.30.6 Hostname: Ports:[]<span class="o">}]</span>
+I0321 15:57:28.322904       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Ingress"</span>, Namespace:<span class="s2">"default"</span>, Name:<span class="s2">"example-ingress"</span>, UID:<span class="s2">"51471ff6-1982-47da-85ee-a9356165df9f"</span>, APIVersion:<span class="s2">"networking.k8s.io/v1"</span>, ResourceVersion:<span class="s2">"13164"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'Sync'</span> Scheduled <span class="k">for </span><span class="nb">sync
+</span>172.16.30.1 - - <span class="o">[</span>21/Mar/2022:16:00:09 +0000] <span class="s2">"GET / HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 80 0.009 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.009 200 766ea45be48fc8dcb53c425eb3800ab2
+I0321 16:04:49.720933       9 admission.go:149] processed ingress via admission controller <span class="o">{</span>testedIngressLength:1 testedIngressTime:0.161s renderingIngressLength:1 renderingIngressTime:0s admissionTime:21.7kBs testedConfigurationSize:0.161<span class="o">}</span>
+I0321 16:04:49.721038       9 main.go:101] <span class="s2">"successfully validated configuration, accepting"</span> <span class="nv">ingress</span><span class="o">=</span><span class="s2">"default/example-ingress"</span>
+I0321 16:04:49.733433       9 controller.go:155] <span class="s2">"Configuration changes detected, backend reload required"</span>
+I0321 16:04:49.734529       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Ingress"</span>, Namespace:<span class="s2">"default"</span>, Name:<span class="s2">"example-ingress"</span>, UID:<span class="s2">"51471ff6-1982-47da-85ee-a9356165df9f"</span>, APIVersion:<span class="s2">"networking.k8s.io/v1"</span>, ResourceVersion:<span class="s2">"13649"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'Sync'</span> Scheduled <span class="k">for </span><span class="nb">sync
+</span>I0321 16:04:49.911585       9 controller.go:172] <span class="s2">"Backend successfully reloaded"</span>
+I0321 16:04:49.914092       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Pod"</span>, Namespace:<span class="s2">"ingress-nginx"</span>, Name:<span class="s2">"ingress-nginx-controller-cc8496874-6zr4h"</span>, UID:<span class="s2">"de6796ef-94a6-499c-b9b5-418c39cc62c0"</span>, APIVersion:<span class="s2">"v1"</span>, ResourceVersion:<span class="s2">"12337"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'RELOAD'</span> NGINX reload triggered due to a change <span class="k">in </span>configuration
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:16:05:30 +0000] <span class="s2">"GET / HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 80 0.004 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.004 200 c3d48047b7ef7ac70326098b25f1e6c1
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:16:05:33 +0000] <span class="s2">"GET /v2 HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.013 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.013 200 e90cf46a8385a64ac01c834734768488
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:16:32:44 +0000] <span class="s2">"GET /v2 HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.114 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.114 200 cb87a3a8abd12099f7db64a2ec83c681
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:03:17 +0000] <span class="s2">"GET /v3 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.040 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.041 200 f794e2a783715ac73ff7177f60e9dd68
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:03:21 +0000] <span class="s2">"GET /v5 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.016 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.017 200 095cbb53ca04bdb4359fa7b745e5a809
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:03:29 +0000] <span class="s2">"GET /v2 HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.002 200 cbc0c654a89c5f98f18a5102ddf61b0e
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:03:33 +0000] <span class="s2">"GET /1 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 81 0.008 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.008 200 767955b2b4eed7791912b2a843363b28
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:05:26 +0000] <span class="s2">"GET /1 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 81 0.004 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.005 200 0ec584df780661bccfa10731bcc70524
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:05:29 +0000] <span class="s2">"GET / HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 80 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 5ecb91527d77741daf16c17a8d79a462
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:05:31 +0000] <span class="s2">"GET /as HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.006 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.005 200 034643529f3104fef19915593168b200
+I0321 17:14:53.079003       9 admission.go:149] processed ingress via admission controller <span class="o">{</span>testedIngressLength:1 testedIngressTime:0.41s renderingIngressLength:1 renderingIngressTime:0.007s admissionTime:21.7kBs testedConfigurationSize:0.417<span class="o">}</span>
+I0321 17:14:53.079746       9 main.go:101] <span class="s2">"successfully validated configuration, accepting"</span> <span class="nv">ingress</span><span class="o">=</span><span class="s2">"default/example-ingress"</span>
+I0321 17:14:53.099157       9 controller.go:155] <span class="s2">"Configuration changes detected, backend reload required"</span>
+I0321 17:14:53.099689       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Ingress"</span>, Namespace:<span class="s2">"default"</span>, Name:<span class="s2">"example-ingress"</span>, UID:<span class="s2">"51471ff6-1982-47da-85ee-a9356165df9f"</span>, APIVersion:<span class="s2">"networking.k8s.io/v1"</span>, ResourceVersion:<span class="s2">"15050"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'Sync'</span> Scheduled <span class="k">for </span><span class="nb">sync
+</span>I0321 17:14:53.225350       9 controller.go:172] <span class="s2">"Backend successfully reloaded"</span>
+I0321 17:14:53.227604       9 event.go:282] Event<span class="o">(</span>v1.ObjectReference<span class="o">{</span>Kind:<span class="s2">"Pod"</span>, Namespace:<span class="s2">"ingress-nginx"</span>, Name:<span class="s2">"ingress-nginx-controller-cc8496874-6zr4h"</span>, UID:<span class="s2">"de6796ef-94a6-499c-b9b5-418c39cc62c0"</span>, APIVersion:<span class="s2">"v1"</span>, ResourceVersion:<span class="s2">"12337"</span>, FieldPath:<span class="s2">""</span><span class="o">})</span>: <span class="nb">type</span>: <span class="s1">'Normal'</span> reason: <span class="s1">'RELOAD'</span> NGINX reload triggered due to a change <span class="k">in </span>configuration
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:16:53 +0000] <span class="s2">"GET /v5 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.009 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.009 200 2e8ee25ad012ea3d5ac6fb4646f37d61
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:16:57 +0000] <span class="s2">"GET /v3 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.004 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.005 200 70d9d27891c2b97a6bcda5e315fa3691
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:01 +0000] <span class="s2">"GET /v2 HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.010 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.009 200 297effa7825bef53d93e6dce4e5d9d62
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:02 +0000] <span class="s2">"GET /v1 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 421c9cb655e07183d9a7d1a89562db97
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:29 +0000] <span class="s2">"GET /v1 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 3bff305b8c1b782d08acf2de386076d9
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:31 +0000] <span class="s2">"GET /v3 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.001 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 e3dca522b7470345325f5dcda8adfc8e
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:34 +0000] <span class="s2">"GET /v5 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 207b1c9f4b52683061bb0807857c32f6
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:36 +0000] <span class="s2">"GET /v6 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 f2d0ae4264c26168246099ee90cc9f27
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:39 +0000] <span class="s2">"GET /vdfs HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 84 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.001 200 b08773ef6c074b4b10fee5626457df47
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:17:40 +0000] <span class="s2">"GET /vdfs HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 84 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 cd5a39f9d32b212bf97b41c57f7b429b
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:18:58 +0000] <span class="s2">"GET /vdfs HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 84 0.009 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.008 200 f413dd82a31c72df36114843c5054aad
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:18:59 +0000] <span class="s2">"GET /vdfs HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 84 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.004 200 09a92db2773acffcd23b31c856673a9b
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:19:12 +0000] <span class="s2">"GET /v1 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.001 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 c21e9af32944af9d9d70b39eaedbe11c
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:19:14 +0000] <span class="s2">"GET /v HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 81 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 5daf84fe1f8992ff8d9d0cdec4b751c1
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:19:17 +0000] <span class="s2">"GET /v2 HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.007 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.008 200 52df2d3780d65d11e34a545583958a17
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:20:32 +0000] <span class="s2">"GET /v2 HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.003 200 d05940e016c2b36ce79996c04065b5a8
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:20:34 +0000] <span class="s2">"GET /v2f HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 83 0.003 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.002 200 c59de52e577935709573bf0515e999e2
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:20:36 +0000] <span class="s2">"GET /v3 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 3354dc569894182a6ee5a5f69892ca66
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:20:40 +0000] <span class="s2">"GET /v35 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 83 0.004 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.004 200 75cccfe798f3a6f2ee072c9233c8e3b7
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:20:44 +0000] <span class="s2">"GET /v2a HTTP/1.1"</span> 200 61 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 83 0.004 <span class="o">[</span>default-web2-8080] <span class="o">[]</span> 10.244.151.3:8080 61 0.004 200 8ae6170f4a95446d0615bfc5d4a16403
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:20:48 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 c4cea1304f930170d7a7148fc2ac04a7
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:21:49 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.004 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 b860ca473d1b622514dd4ebf194311f2
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:21:50 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 1f8bf150a942fb5272d01d9a82c6fd77
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:21:51 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 2a2c3eec3ebe85dd546ea35cf92f1357
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:21:52 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.005 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.005 200 fca07770b107dfb25126f60a1f4dabcc
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:21:52 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 421ddaffd339aafd3ac912c195035b7e
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:22:41 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 58a2dc6300d892b640bd26ab007daba8
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:22:42 +0000] <span class="s2">"GET /dg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 402a0a5fd8037182ea8671d3d9347ee7
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:22:44 +0000] <span class="s2">"GET /df HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.004 200 4cb6f78cb734373510f98f669cdf253d
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:22:46 +0000] <span class="s2">"GET /dfdg HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 84 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.001 200 2fd8c843e0fac657bc80e2a6b23dcaf6
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:23:52 +0000] <span class="s2">"GET /v7 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 5aaabd3963132e95499b5be8b57368e6
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:23:54 +0000] <span class="s2">"GET /v9 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.002 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.002 200 452ce52c0ab19f2fdc37152f925887f7
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:24:28 +0000] <span class="s2">"GET /v9 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.004 200 faf0e7f8be1b66b38f6747c7df815525
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:24:30 +0000] <span class="s2">"GET /v9 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.004 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 c4526f5d5a9fab7245b1d77becf24bb7
+172.16.30.1 - - <span class="o">[</span>21/Mar/2022:17:24:31 +0000] <span class="s2">"GET /v9 HTTP/1.1"</span> 200 60 <span class="s2">"-"</span> <span class="s2">"curl/7.77.0"</span> 82 0.003 <span class="o">[</span>default-web-8080] <span class="o">[]</span> 10.244.205.195:8080 60 0.003 200 47fd2dd3ed81e5fa3762687343ed06c0
+pradeep@learnk8s<span class="err">$</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/tags/#minikube" class="page__taxonomy-item p-category" rel="tag">minikube</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/blog/categories/#kubernetes" class="page__taxonomy-item p-category" rel="tag">Kubernetes</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time></p>
+
+      </footer>
+      <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Kubernetes+Ingress+Controller%20https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F03%2F21%2Fkubernetes-ingress.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F03%2F21%2Fkubernetes-ingress.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.pradeepgadde.com%2Fblog%2Fkubernetes%2F2022%2F03%2F21%2Fkubernetes-ingress.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" class="pagination--pager" title="Kubernetes DNS
+">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/coredns.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/21/kubernetes-dns.html" rel="permalink">Kubernetes DNS
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-21T10:55:04+05:30">March 21, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes DNS
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kindnet.jpeg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking.html" rel="permalink">Kubernetes Networking with Minikube (Kindnet CNI)
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          18 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Hello!
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/calico.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/19/kubernetes-networking-calico.html" rel="permalink">Kubernetes Networking with Calico CNI
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-19T10:55:04+05:30">March 19, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          22 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubernetes Networking with Calico CNI
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/blog/assets/images/kubernetes.png" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/kubernetes/2022/03/01/kubernetes-rollout.html" rel="permalink">Kubectl Rollout
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-03-01T10:55:04+05:30">March 1, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Kubectl Rollout
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/junivator" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/pradeepgadde" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+      <li><a href="/blog/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Pradeep Gadde. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/blog/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/blog/assets/js/lunr/lunr.min.js"></script>
+<script src="/blog/assets/js/lunr/lunr-store.js"></script>
+<script src="/blog/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>
